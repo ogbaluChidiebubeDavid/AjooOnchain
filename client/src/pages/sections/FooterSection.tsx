@@ -1,5 +1,3 @@
-import { Separator } from "@/components/ui/separator";
-
 const footerLinks = {
   protocol: [
     "Rotational Savings",
@@ -18,56 +16,47 @@ const footerLinks = {
   resources: ["Documentations", "Help Center"],
 };
 
-const socialIcons = [
-  {
-    name: "Facebook",
-    src: "/figmaAssets/facebook.png",
-  },
-  {
-    name: "Linkedin",
-    src: "/figmaAssets/linkedin.png",
-  },
-];
-
 export const FooterSection = (): JSX.Element => {
   return (
-    <footer className="w-full bg-dark-50 py-16 px-20">
+    <footer className="w-full bg-[#121212] py-16 px-20">
       <div className="max-w-[1440px] mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 mb-16">
-          <div className="lg:col-span-1">
-            <div className="inline-flex items-center justify-center gap-2.5 p-2.5 mb-6">
-              <div className="relative w-fit [font-family:'Artifika',Helvetica] font-normal text-[32px] tracking-[0] leading-[30px] whitespace-nowrap">
+        <div className="flex justify-between gap-12 mb-16">
+          <div className="max-w-[360px]">
+            <div className="inline-flex items-center justify-center p-2.5 mb-6">
+              <div className="font-['Artifika',serif] font-normal text-[32px] leading-[30px] whitespace-nowrap">
                 <span className="text-white">AJO</span>
                 <span className="text-[#87bbb7]">O</span>
               </div>
             </div>
 
-            <p className="max-w-[360px] font-body-xl font-[number:var(--body-xl-font-weight)] text-surface-50 text-[length:var(--body-xl-font-size)] tracking-[var(--body-xl-letter-spacing)] leading-[var(--body-xl-line-height)] [font-style:var(--body-xl-font-style)] mb-8">
+            <p className="font-['Inter',sans-serif] font-normal text-white text-[18px] leading-[28px] mb-8">
               The crosschain protocol that turns traditional Ajo into an income
               generating asset.
             </p>
 
-            <div className="flex items-center gap-12">
-              {socialIcons.map((icon) => (
-                <img
-                  key={icon.name}
-                  className="w-6 h-6"
-                  alt={icon.name}
-                  src={icon.src}
-                />
-              ))}
+            <div className="flex items-center gap-6">
+              <img
+                className="w-6 h-6 cursor-pointer"
+                alt="Facebook"
+                src="/figmaAssets/facebook.png"
+              />
+              <img
+                className="w-6 h-6 cursor-pointer"
+                alt="LinkedIn"
+                src="/figmaAssets/linkedin.png"
+              />
             </div>
           </div>
 
-          <div className="lg:col-span-1">
-            <h3 className="[font-family:'Manrope',Helvetica] font-semibold text-white text-2xl tracking-[0] leading-[34px] whitespace-nowrap mb-6">
+          <div>
+            <h3 className="font-['Manrope',sans-serif] font-semibold text-white text-[24px] leading-[34px] mb-3">
               Protocol
             </h3>
-            <ul className="space-y-3">
+            <ul className="space-y-0">
               {footerLinks.protocol.map((link) => (
                 <li
                   key={link}
-                  className="font-body-xl font-[number:var(--body-xl-font-weight)] text-white text-[length:var(--body-xl-font-size)] tracking-[var(--body-xl-letter-spacing)] leading-[var(--body-xl-line-height)] [font-style:var(--body-xl-font-style)]"
+                  className="font-['Inter',sans-serif] font-normal text-white text-[18px] leading-[28px] cursor-pointer hover:text-[#0f766e] transition-colors"
                 >
                   {link}
                 </li>
@@ -75,15 +64,15 @@ export const FooterSection = (): JSX.Element => {
             </ul>
           </div>
 
-          <div className="lg:col-span-1">
-            <h3 className="[font-family:'Manrope',Helvetica] font-semibold text-white text-2xl tracking-[0] leading-[34px] whitespace-nowrap mb-6">
+          <div>
+            <h3 className="font-['Manrope',sans-serif] font-semibold text-white text-[24px] leading-[34px] mb-3">
               Company
             </h3>
-            <ul className="space-y-3">
+            <ul className="space-y-0">
               {footerLinks.company.map((link) => (
                 <li
                   key={link}
-                  className="font-body-xl font-[number:var(--body-xl-font-weight)] text-white text-[length:var(--body-xl-font-size)] tracking-[var(--body-xl-letter-spacing)] leading-[var(--body-xl-line-height)] [font-style:var(--body-xl-font-style)]"
+                  className="font-['Inter',sans-serif] font-normal text-white text-[18px] leading-[28px] cursor-pointer hover:text-[#0f766e] transition-colors"
                 >
                   {link}
                 </li>
@@ -91,15 +80,15 @@ export const FooterSection = (): JSX.Element => {
             </ul>
           </div>
 
-          <div className="lg:col-span-1">
-            <h3 className="[font-family:'Manrope',Helvetica] font-semibold text-white text-2xl tracking-[0] leading-[34px] whitespace-nowrap mb-6">
+          <div>
+            <h3 className="font-['Manrope',sans-serif] font-semibold text-white text-[24px] leading-[34px] mb-3">
               Resources
             </h3>
-            <ul className="space-y-3">
+            <ul className="space-y-0">
               {footerLinks.resources.map((link) => (
                 <li
                   key={link}
-                  className="font-body-xl font-[number:var(--body-xl-font-weight)] text-white text-[length:var(--body-xl-font-size)] tracking-[var(--body-xl-letter-spacing)] leading-[var(--body-xl-line-height)] [font-style:var(--body-xl-font-style)]"
+                  className="font-['Inter',sans-serif] font-normal text-white text-[18px] leading-[28px] cursor-pointer hover:text-[#0f766e] transition-colors"
                 >
                   {link}
                 </li>
@@ -108,7 +97,7 @@ export const FooterSection = (): JSX.Element => {
           </div>
         </div>
 
-        <Separator className="bg-white/20 mb-8" />
+        <div className="w-full h-px bg-white/20" />
       </div>
     </footer>
   );

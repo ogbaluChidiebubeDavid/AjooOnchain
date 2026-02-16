@@ -1,22 +1,20 @@
-import { Button } from "@/components/ui/button";
-
 export const CallToActionSection = (): JSX.Element => {
   return (
-    <section className="relative w-full bg-dark-50 py-[74px] overflow-hidden">
-      <div className="container mx-auto px-20 relative">
+    <section className="relative w-full bg-[#121212] py-[74px] overflow-hidden">
+      <div className="max-w-[1440px] mx-auto px-20 relative">
         <div className="flex items-center justify-between">
           <div className="flex flex-col gap-[114px] max-w-[668px]">
-            <h2 className="font-heading-xl-bold font-[number:var(--heading-xl-bold-font-weight)] text-[length:var(--heading-xl-bold-font-size)] tracking-[var(--heading-xl-bold-letter-spacing)] leading-[var(--heading-xl-bold-line-height)] [font-style:var(--heading-xl-bold-font-style)]">
+            <h2 className="font-['Manrope',sans-serif] font-semibold text-[60px] leading-[78px]">
               <span className="text-white">Get Your </span>
-              <span className="text-teal-700">Savings</span>
+              <span className="text-[#0f766e]">Savings</span>
               <span className="text-white"> Journey Started</span>
             </h2>
 
-            <Button className="h-auto px-8 py-2 bg-primary-200 hover:bg-primary-200/90 rounded-3xl w-fit">
-              <span className="[font-family:'Manrope',Helvetica] font-semibold text-white text-base tracking-[0] leading-[30px]">
+            <button className="inline-flex items-center justify-center px-4 py-2 bg-[#0f766e] rounded-3xl hover:bg-[#0f766e]/90 transition-colors w-fit">
+              <span className="font-['Inter',sans-serif] font-normal text-white text-[18px] leading-[28px]">
                 Launch App
               </span>
-            </Button>
+            </button>
           </div>
 
           <div className="relative flex-shrink-0">
