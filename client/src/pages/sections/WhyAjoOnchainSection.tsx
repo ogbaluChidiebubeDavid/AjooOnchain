@@ -1,4 +1,9 @@
+import { useScrollReveal } from "@/hooks/useScrollReveal";
+
 export const WhyAjoOnchainSection = (): JSX.Element => {
+  const heading = useScrollReveal(0.1);
+  const content = useScrollReveal(0.1);
+
   return (
     <section className="relative bg-black py-16 md:py-20 lg:py-24 overflow-hidden">
       <img
@@ -8,13 +13,15 @@ export const WhyAjoOnchainSection = (): JSX.Element => {
       />
 
       <div className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20">
-        <h2 className="text-center font-['Manrope',sans-serif] font-normal text-[28px] md:text-[34px] leading-[40px] md:leading-[48px] mb-12 md:mb-16">
-          <span className="text-white">WHY </span>
-          <span className="text-[#0f766e]">AJO</span>
-          <span className="text-white"> ONCHAIN?</span>
-        </h2>
+        <div ref={heading.ref} className={`reveal ${heading.isVisible ? "visible" : ""}`}>
+          <h2 className="text-center font-['Manrope',sans-serif] font-normal text-[28px] md:text-[34px] leading-[40px] md:leading-[48px] mb-12 md:mb-16">
+            <span className="text-white">WHY </span>
+            <span className="text-[#0f766e]">AJO</span>
+            <span className="text-white"> ONCHAIN?</span>
+          </h2>
+        </div>
 
-        <div className="flex flex-col lg:flex-row items-center lg:items-start gap-10 lg:gap-12">
+        <div ref={content.ref} className={`reveal ${content.isVisible ? "visible" : ""} flex flex-col lg:flex-row items-center lg:items-start gap-10 lg:gap-12`}>
           <div className="flex-shrink-0 w-full max-w-[500px] lg:max-w-[640px]">
             <img
               className="w-full h-auto object-cover"

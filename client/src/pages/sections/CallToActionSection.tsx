@@ -1,8 +1,12 @@
+import { useScrollReveal } from "@/hooks/useScrollReveal";
+
 export const CallToActionSection = (): JSX.Element => {
+  const content = useScrollReveal(0.1);
+
   return (
     <section className="relative w-full bg-[#121212] py-16 md:py-20 lg:py-[74px] overflow-hidden">
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 relative">
-        <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between gap-10 lg:gap-8">
+        <div ref={content.ref} className={`reveal ${content.isVisible ? "visible" : ""} flex flex-col lg:flex-row items-center lg:items-start justify-between gap-10 lg:gap-8`}>
           <div className="flex flex-col gap-12 md:gap-16 lg:gap-[114px] max-w-[668px] text-center lg:text-left">
             <h2 className="font-['Manrope',sans-serif] font-semibold text-[36px] md:text-[48px] lg:text-[60px] leading-[44px] md:leading-[60px] lg:leading-[78px]">
               <span className="text-white">Get Your </span>

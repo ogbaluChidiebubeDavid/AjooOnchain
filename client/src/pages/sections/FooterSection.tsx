@@ -1,3 +1,5 @@
+import { useScrollReveal } from "@/hooks/useScrollReveal";
+
 const footerLinks = {
   protocol: [
     "Rotational Savings",
@@ -17,9 +19,11 @@ const footerLinks = {
 };
 
 export const FooterSection = (): JSX.Element => {
+  const content = useScrollReveal(0.1);
+
   return (
     <footer className="w-full bg-[#121212] py-12 md:py-16">
-      <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20">
+      <div ref={content.ref} className={`reveal ${content.isVisible ? "visible" : ""} max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20`}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 mb-12 md:mb-16">
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="inline-flex items-center p-2.5 mb-4 md:mb-6">

@@ -1,3 +1,5 @@
+import { useScrollReveal } from "@/hooks/useScrollReveal";
+
 const features = [
   {
     title: "Decentralized Rotational Savings",
@@ -22,14 +24,19 @@ const features = [
 ];
 
 export const CoreFeaturesSection = (): JSX.Element => {
+  const heading = useScrollReveal(0.1);
+  const grid = useScrollReveal(0.1);
+
   return (
     <section className="bg-black py-16 md:py-20 lg:py-24">
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20">
-        <h2 className="text-center font-['Manrope',sans-serif] font-normal text-white text-[28px] md:text-[34px] leading-[40px] md:leading-[48px] mb-12 md:mb-16">
-          CORE FEATURES
-        </h2>
+        <div ref={heading.ref} className={`reveal ${heading.isVisible ? "visible" : ""}`}>
+          <h2 className="text-center font-['Manrope',sans-serif] font-normal text-white text-[28px] md:text-[34px] leading-[40px] md:leading-[48px] mb-12 md:mb-16">
+            CORE FEATURES
+          </h2>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+        <div ref={grid.ref} className={`reveal ${grid.isVisible ? "visible" : ""} grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8`}>
           {features.map((feature, index) => (
             <div
               key={index}

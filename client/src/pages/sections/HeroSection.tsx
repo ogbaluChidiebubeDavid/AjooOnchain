@@ -1,5 +1,6 @@
 import { ChevronDownIcon, Menu, X } from "lucide-react";
 import { useState } from "react";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const navigationItems = [
   { label: "Home", active: true, hasDropdown: false },
@@ -10,36 +11,37 @@ const navigationItems = [
 
 export const HeroSection = (): JSX.Element => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const heroContent = useScrollReveal(0.1);
 
   return (
     <section className="relative">
       <header className="w-full bg-[#202327] relative z-20">
         <div className="max-w-[1440px] mx-auto flex items-center justify-between h-[84px] px-6 md:px-12 lg:px-20">
-          <div className="flex items-center p-2.5">
+          <a href="#" className="flex items-center p-2.5 cursor-pointer" data-testid="link-logo">
             <div className="font-['Artifika',serif] font-normal text-[28px] md:text-[32px] leading-[30px] whitespace-nowrap">
               <span className="text-white">AJO</span>
               <span className="text-[#87bbb7]">O</span>
             </div>
-          </div>
+          </a>
 
           <nav className="hidden lg:flex items-center gap-10 xl:gap-16 px-4 py-2" data-testid="nav-desktop">
             {navigationItems.map((item, index) => (
               <div
                 key={index}
-                className={`flex items-center cursor-pointer ${
-                  item.active ? "border-b-2 border-[#0f766e] pb-0.5" : ""
+                className={`flex items-center cursor-pointer group transition-colors duration-200 border-b-2 pb-0.5 ${
+                  item.active ? "border-[#0f766e]" : "border-transparent hover:border-[#0f766e]"
                 }`}
                 data-testid={`nav-item-${item.label.toLowerCase()}`}
               >
                 <span
-                  className={`font-['Inter',sans-serif] font-normal text-[16px] leading-[24px] whitespace-nowrap ${
-                    item.active ? "text-[#0f766e]" : "text-white"
+                  className={`font-['Inter',sans-serif] font-normal text-[16px] leading-[24px] whitespace-nowrap transition-colors duration-200 ${
+                    item.active ? "text-[#0f766e]" : "text-white group-hover:text-[#0f766e]"
                   }`}
                 >
                   {item.label}
                 </span>
                 {item.hasDropdown && (
-                  <ChevronDownIcon className="w-5 h-5 text-white ml-1" />
+                  <ChevronDownIcon className="w-5 h-5 text-white group-hover:text-[#0f766e] transition-colors duration-200 ml-1" />
                 )}
               </div>
             ))}
@@ -69,12 +71,12 @@ export const HeroSection = (): JSX.Element => {
               {navigationItems.map((item, index) => (
                 <div
                   key={index}
-                  className="flex items-center cursor-pointer"
+                  className="flex items-center cursor-pointer group"
                   data-testid={`nav-mobile-item-${item.label.toLowerCase()}`}
                 >
                   <span
-                    className={`font-['Inter',sans-serif] font-normal text-[16px] leading-[24px] ${
-                      item.active ? "text-[#0f766e]" : "text-white"
+                    className={`font-['Inter',sans-serif] font-normal text-[16px] leading-[24px] transition-colors duration-200 ${
+                      item.active ? "text-[#0f766e]" : "text-white group-hover:text-[#0f766e]"
                     }`}
                   >
                     {item.label}
@@ -104,7 +106,7 @@ export const HeroSection = (): JSX.Element => {
           src="/figmaAssets/untitled-design--15--1.png"
         />
 
-        <div className="relative max-w-[1440px] mx-auto flex flex-col lg:flex-row items-center lg:items-start justify-between px-6 md:px-12 lg:px-20 pt-16 md:pt-24 lg:pt-[140px] pb-16 lg:pb-[100px] gap-8 lg:gap-4">
+        <div ref={heroContent.ref} className={`reveal ${heroContent.isVisible ? "visible" : ""} relative max-w-[1440px] mx-auto flex flex-col lg:flex-row items-center lg:items-start justify-between px-6 md:px-12 lg:px-20 pt-16 md:pt-24 lg:pt-[140px] pb-16 lg:pb-[100px] gap-8 lg:gap-4`}>
           <div className="max-w-[668px] z-10 text-center lg:text-left">
             <h1 className="font-['Manrope',sans-serif] font-semibold text-white text-[36px] md:text-[48px] lg:text-[60px] leading-[44px] md:leading-[60px] lg:leading-[78px] mb-6 md:mb-8">
               Don't Just Save. Multiply Your Wealth Together
