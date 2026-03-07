@@ -6,13 +6,17 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 
 import { DashboardOverview } from "@/pages/DashboardOverview";
+import { DashboardAssets } from "@/pages/DashboardAssets";
+import { DashboardRotationalSavings } from "@/pages/DashboardRotationalSavings";
+import { DashboardYields } from "@/pages/DashboardYields";
 
 function Router() {
   return (
     <Switch>
-      {/* Add pages below */}
       <Route path="/" component={DashboardOverview} />
-      {/* Fallback to 404 */}
+      <Route path="/assets" component={DashboardAssets} />
+      <Route path="/rotational-savings" component={DashboardRotationalSavings} />
+      <Route path="/yields" component={DashboardYields} />
       <Route component={NotFound} />
     </Switch>
   );
