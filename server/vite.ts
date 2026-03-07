@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import express, { type Express } from "express";
 import fs from "fs";
 import path from "path";
@@ -6,17 +7,23 @@ import { createServer as createViteServer, createLogger } from "vite";
 import { type Server } from "http";
 import viteConfig from "../vite.config";
 =======
+=======
+>>>>>>> main
 import { type Express } from "express";
 import { createServer as createViteServer, createLogger } from "vite";
 import { type Server } from "http";
 import viteConfig from "../vite.config";
 import fs from "fs";
 import path from "path";
+<<<<<<< HEAD
 >>>>>>> 2088e20 (Initial commit)
+=======
+>>>>>>> main
 import { nanoid } from "nanoid";
 
 const viteLogger = createLogger();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -34,11 +41,16 @@ export async function setupVite(app: Express, server: Server) {
     middlewareMode: true,
     hmr: { server },
 =======
+=======
+>>>>>>> main
 export async function setupVite(server: Server, app: Express) {
   const serverOptions = {
     middlewareMode: true,
     hmr: { server, path: "/vite-hmr" },
+<<<<<<< HEAD
 >>>>>>> 2088e20 (Initial commit)
+=======
+>>>>>>> main
     allowedHosts: true as const,
   };
 
@@ -58,11 +70,16 @@ export async function setupVite(server: Server, app: Express) {
 
   app.use(vite.middlewares);
 <<<<<<< HEAD
+<<<<<<< HEAD
   app.use("*", async (req, res, next) => {
 =======
 
   app.use("/{*path}", async (req, res, next) => {
 >>>>>>> 2088e20 (Initial commit)
+=======
+
+  app.use("/{*path}", async (req, res, next) => {
+>>>>>>> main
     const url = req.originalUrl;
 
     try {
@@ -88,6 +105,7 @@ export async function setupVite(server: Server, app: Express) {
   });
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 export function serveStatic(app: Express) {
   const distPath = path.resolve(import.meta.dirname, "public");
@@ -107,3 +125,5 @@ export function serveStatic(app: Express) {
 }
 =======
 >>>>>>> 2088e20 (Initial commit)
+=======
+>>>>>>> main

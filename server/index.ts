@@ -1,6 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
@@ -8,6 +9,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 =======
+=======
+>>>>>>> main
 import { serveStatic } from "./static";
 import { createServer } from "http";
 
@@ -41,7 +44,10 @@ export function log(message: string, source = "express") {
   console.log(`${formattedTime} [${source}] ${message}`);
 }
 
+<<<<<<< HEAD
 >>>>>>> 2088e20 (Initial commit)
+=======
+>>>>>>> main
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -62,12 +68,15 @@ app.use((req, res, next) => {
       }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
       if (logLine.length > 80) {
         logLine = logLine.slice(0, 79) + "…";
       }
 
 =======
 >>>>>>> 2088e20 (Initial commit)
+=======
+>>>>>>> main
       log(logLine);
     }
   });
@@ -76,6 +85,7 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+<<<<<<< HEAD
 <<<<<<< HEAD
   const server = await registerRoutes(app);
 
@@ -86,6 +96,8 @@ app.use((req, res, next) => {
     res.status(status).json({ message });
     throw err;
 =======
+=======
+>>>>>>> main
   await registerRoutes(httpServer, app);
 
   app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
@@ -99,30 +111,40 @@ app.use((req, res, next) => {
     }
 
     return res.status(status).json({ message });
+<<<<<<< HEAD
 >>>>>>> 2088e20 (Initial commit)
+=======
+>>>>>>> main
   });
 
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
 <<<<<<< HEAD
+<<<<<<< HEAD
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
     serveStatic(app);
 =======
+=======
+>>>>>>> main
   if (process.env.NODE_ENV === "production") {
     serveStatic(app);
   } else {
     const { setupVite } = await import("./vite");
     await setupVite(httpServer, app);
+<<<<<<< HEAD
 >>>>>>> 2088e20 (Initial commit)
+=======
+>>>>>>> main
   }
 
   // ALWAYS serve the app on the port specified in the environment variable PORT
   // Other ports are firewalled. Default to 5000 if not specified.
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
+<<<<<<< HEAD
 <<<<<<< HEAD
   const port = parseInt(process.env.PORT || '5000', 10);
   server.listen({
@@ -133,6 +155,8 @@ app.use((req, res, next) => {
     log(`serving on port ${port}`);
   });
 =======
+=======
+>>>>>>> main
   const port = parseInt(process.env.PORT || "5000", 10);
   httpServer.listen(
     {
@@ -144,5 +168,8 @@ app.use((req, res, next) => {
       log(`serving on port ${port}`);
     },
   );
+<<<<<<< HEAD
 >>>>>>> 2088e20 (Initial commit)
+=======
+>>>>>>> main
 })();
