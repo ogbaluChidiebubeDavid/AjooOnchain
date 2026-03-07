@@ -7,10 +7,29 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+<<<<<<< HEAD
         "dark-50": "var(--dark-50)",
         "primary-200": "var(--primary-200)",
         "primary-50": "var(--primary-50)",
         "surface-50": "var(--surface-50)",
+=======
+        "danger-200": "var(--danger-200)",
+        "dark-50": "var(--dark-50)",
+        opacityprimary: "var(--opacityprimary)",
+        opacitysecondary: "var(--opacitysecondary)",
+        "primary-100": "var(--primary-100)",
+        "primary-200": "var(--primary-200)",
+        "primary-300": "var(--primary-300)",
+        "primary-400": "var(--primary-400)",
+        "secondary-100": "var(--secondary-100)",
+        "secondary-200": "var(--secondary-200)",
+        "success-100": "var(--success-100)",
+        "surface-100": "var(--surface-100)",
+        "surface-300": "var(--surface-300)",
+        "surface-400": "var(--surface-400)",
+        "surface-50": "var(--surface-50)",
+        "surface-500": "var(--surface-500)",
+>>>>>>> 2088e20 (Initial commit)
         "surface-900": "var(--surface-900)",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -49,9 +68,18 @@ module.exports = {
       fontFamily: {
         "body-lg": "var(--body-lg-font-family)",
         "body-md": "var(--body-md-font-family)",
+<<<<<<< HEAD
         "body-xl": "var(--body-xl-font-family)",
         "heading-md": "var(--heading-md-font-family)",
         "heading-xl-bold": "var(--heading-xl-bold-font-family)",
+=======
+        "body-sm": "var(--body-sm-font-family)",
+        "body-xl": "var(--body-xl-font-family)",
+        caption: "var(--caption-font-family)",
+        "heading-lg": "var(--heading-lg-font-family)",
+        "heading-md": "var(--heading-md-font-family)",
+        "title-lg": "var(--title-lg-font-family)",
+>>>>>>> 2088e20 (Initial commit)
         "title-xl": "var(--title-xl-font-family)",
         sans: [
           "ui-sans-serif",

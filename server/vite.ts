@@ -1,13 +1,23 @@
+<<<<<<< HEAD
 import express, { type Express } from "express";
 import fs from "fs";
 import path from "path";
 import { createServer as createViteServer, createLogger } from "vite";
 import { type Server } from "http";
 import viteConfig from "../vite.config";
+=======
+import { type Express } from "express";
+import { createServer as createViteServer, createLogger } from "vite";
+import { type Server } from "http";
+import viteConfig from "../vite.config";
+import fs from "fs";
+import path from "path";
+>>>>>>> 2088e20 (Initial commit)
 import { nanoid } from "nanoid";
 
 const viteLogger = createLogger();
 
+<<<<<<< HEAD
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
     hour: "numeric",
@@ -23,6 +33,12 @@ export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
     middlewareMode: true,
     hmr: { server },
+=======
+export async function setupVite(server: Server, app: Express) {
+  const serverOptions = {
+    middlewareMode: true,
+    hmr: { server, path: "/vite-hmr" },
+>>>>>>> 2088e20 (Initial commit)
     allowedHosts: true as const,
   };
 
@@ -41,7 +57,12 @@ export async function setupVite(app: Express, server: Server) {
   });
 
   app.use(vite.middlewares);
+<<<<<<< HEAD
   app.use("*", async (req, res, next) => {
+=======
+
+  app.use("/{*path}", async (req, res, next) => {
+>>>>>>> 2088e20 (Initial commit)
     const url = req.originalUrl;
 
     try {
@@ -66,6 +87,7 @@ export async function setupVite(app: Express, server: Server) {
     }
   });
 }
+<<<<<<< HEAD
 
 export function serveStatic(app: Express) {
   const distPath = path.resolve(import.meta.dirname, "public");
@@ -83,3 +105,5 @@ export function serveStatic(app: Express) {
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }
+=======
+>>>>>>> 2088e20 (Initial commit)

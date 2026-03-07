@@ -20,19 +20,47 @@
   --body-md-font-weight: 400;
   --body-md-letter-spacing: 0px;
   --body-md-line-height: 20px;
+<<<<<<< HEAD
+=======
+  --body-sm-font-family: "Inter", Helvetica;
+  --body-sm-font-size: 12px;
+  --body-sm-font-style: normal;
+  --body-sm-font-weight: 400;
+  --body-sm-letter-spacing: 0px;
+  --body-sm-line-height: 18px;
+>>>>>>> 2088e20 (Initial commit)
   --body-xl-font-family: "Inter", Helvetica;
   --body-xl-font-size: 18px;
   --body-xl-font-style: normal;
   --body-xl-font-weight: 400;
   --body-xl-letter-spacing: 0px;
   --body-xl-line-height: 28px;
+<<<<<<< HEAD
   --dark-50: rgba(18, 18, 18, 1);
   --heading-md-font-family: "Manrope", Helvetica;
+=======
+  --caption-font-family: "Manrope", Helvetica;
+  --caption-font-size: 10px;
+  --caption-font-style: normal;
+  --caption-font-weight: 400;
+  --caption-letter-spacing: 0px;
+  --caption-line-height: 14px;
+  --danger-200: rgba(201, 41, 41, 1);
+  --dark-50: rgba(18, 18, 18, 1);
+  --heading-lg-font-family: "Syne", Helvetica;
+  --heading-lg-font-size: 48px;
+  --heading-lg-font-style: normal;
+  --heading-lg-font-weight: 400;
+  --heading-lg-letter-spacing: 0px;
+  --heading-lg-line-height: 64px;
+  --heading-md-font-family: "Syne", Helvetica;
+>>>>>>> 2088e20 (Initial commit)
   --heading-md-font-size: 34px;
   --heading-md-font-style: normal;
   --heading-md-font-weight: 400;
   --heading-md-letter-spacing: 0px;
   --heading-md-line-height: 48px;
+<<<<<<< HEAD
   --heading-xl-bold-font-family: "Manrope", Helvetica;
   --heading-xl-bold-font-size: 60px;
   --heading-xl-bold-font-style: normal;
@@ -44,6 +72,30 @@
   --surface-50: rgba(255, 255, 255, 1);
   --surface-900: rgba(32, 35, 39, 1);
   --title-xl-font-family: "Manrope", Helvetica;
+=======
+  --opacityprimary: rgba(15, 118, 110, 0.15);
+  --opacitysecondary: rgba(246, 189, 96, 0.15);
+  --primary-100: rgba(135, 187, 183, 1);
+  --primary-200: rgba(15, 118, 110, 1);
+  --primary-300: rgba(10, 79, 73, 1);
+  --primary-400: rgba(5, 39, 37, 1);
+  --secondary-100: rgba(251, 222, 176, 1);
+  --secondary-200: rgba(246, 189, 96, 1);
+  --success-100: rgba(27, 197, 144, 1);
+  --surface-100: rgba(247, 249, 253, 1);
+  --surface-300: rgba(203, 207, 210, 1);
+  --surface-400: rgba(167, 174, 180, 1);
+  --surface-50: rgba(255, 255, 255, 1);
+  --surface-500: rgba(142, 151, 159, 1);
+  --surface-900: rgba(32, 35, 39, 1);
+  --title-lg-font-family: "Syne", Helvetica;
+  --title-lg-font-size: 20px;
+  --title-lg-font-style: normal;
+  --title-lg-font-weight: 400;
+  --title-lg-letter-spacing: 0px;
+  --title-lg-line-height: 30px;
+  --title-xl-font-family: "Syne", Helvetica;
+>>>>>>> 2088e20 (Initial commit)
   --title-xl-font-size: 24px;
   --title-xl-font-style: normal;
   --title-xl-font-weight: 400;
@@ -158,6 +210,7 @@
   }
 }
 
+<<<<<<< HEAD
 .reveal {
   opacity: 0;
   transform: translateY(40px);
@@ -169,6 +222,8 @@
   transform: translateY(0);
 }
 
+=======
+>>>>>>> 2088e20 (Initial commit)
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
