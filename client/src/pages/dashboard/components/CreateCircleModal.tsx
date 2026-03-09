@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
-import { useWeb3 } from "@/lib/Web3Context";
+import { useWeb3, FACTORY_ADDRESS } from "@/lib/Web3Context";
 import { supabase } from "@/lib/supabase";
 import AjooFactoryABI from "@/lib/AjooFactoryABI.json";
 import {
@@ -18,10 +18,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { PlusCircle, Loader2 } from "lucide-react";
-
-// Placeholder for the deployed Factory address on Fuji
-// You will need to update this after running the deploy script
-const FACTORY_ADDRESS = "0xE9412467A7cB0DeABD24C2044758Ffa945f87bd3"; 
 
 export const CreateCircleModal = () => {
   const { account, signer } = useWeb3();
