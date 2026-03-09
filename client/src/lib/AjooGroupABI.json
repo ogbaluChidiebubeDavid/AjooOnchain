@@ -165,6 +165,13 @@
     },
     {
       "type": "function",
+      "name": "joinGroup",
+      "inputs": [],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
       "name": "lastPayoutTimestamp",
       "inputs": [],
       "outputs": [

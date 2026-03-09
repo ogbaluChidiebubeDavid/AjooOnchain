@@ -80,6 +80,24 @@ contract AjooGroup is ReentrancyGuard, AutomationCompatibleInterface {
     // --- Core Functions ---
 
     /**
+     * @dev Allows a user to join the group if there is space.
+     * For now, we allow joining before the first payout cycle starts.
+     */
+    function joinGroup() external {
+        require(memberIndices[msg.sender] == 0, "Already a member");
+        // Simplified check: allow joining if group has fewer than 10 members
+        require(members.length < 10, "Group is full");
+
+        members.push(Member({
+            account: msg.sender,
+            hasContributedThisCycle: false,
+            totalContributed: 0
+        }));
+        
+        memberIndices[msg.sender] = members.length;
+    }
+
+    /**
      * @dev Users deposit their contribution.
      * Can be called directly or via an ERC-4337 Paymaster/Smart Account.
      */

@@ -21,7 +21,7 @@ import { PlusCircle, Loader2 } from "lucide-react";
 
 // Placeholder for the deployed Factory address on Fuji
 // You will need to update this after running the deploy script
-const FACTORY_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; 
+const FACTORY_ADDRESS = "0xE9412467A7cB0DeABD24C2044758Ffa945f87bd3"; 
 
 export const CreateCircleModal = () => {
   const { account, signer } = useWeb3();
@@ -77,19 +77,22 @@ export const CreateCircleModal = () => {
       const receipt = await tx.wait();
       
       // Extract the new group address from the event
-      const event = receipt.logs.find((log: any) => {
-        try {
-           const parsed = factoryContract.interface.parseLog(log);
-           return parsed?.name === 'GroupCreated';
-        } catch (e) {
-          return false;
-        }
-      });
+      let newGroupAddress = `UNKNOWN_ADDRESS_${Date.now()}`;
       
-      let newGroupAddress = "UNKNOWN_ADDRESS";
-      if (event) {
-         const parsedLog = factoryContract.interface.parseLog(event);
-         newGroupAddress = parsedLog?.args[0];
+      for (const log of receipt.logs) {
+        try {
+          const parsedLog = factoryContract.interface.parseLog({
+            topics: [...log.topics],
+            data: log.data
+          });
+          
+          if (parsedLog && parsedLog.name === 'GroupCreated') {
+            newGroupAddress = parsedLog.args[0];
+            break;
+          }
+        } catch (e) {
+          // Ignore logs that don't match the ABI
+        }
       }
 
       // 2. Save metadata to Supabase
@@ -102,6 +105,7 @@ export const CreateCircleModal = () => {
           creator_address: account.toLowerCase(),
           contribution_amount: formData.amount,
           cycle_duration: durationInSeconds,
+          cycle_duration_days: parseInt(formData.duration),
         })
         .select()
         .single();

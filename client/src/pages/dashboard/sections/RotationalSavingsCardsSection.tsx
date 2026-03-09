@@ -58,7 +58,19 @@ export const RotationalSavingsCardsSection = (): JSX.Element => {
 
     setJoiningGroupId(group.id);
     try {
-      // 1. Approve USDC transfer
+      const groupContract = new ethers.Contract(group.contract_address, AjooGroupABI.abi, signer);
+      
+      // 1. Check if user needs to join the group first
+      const memberIndex = await groupContract.memberIndices(account);
+      
+      if (Number(memberIndex) === 0) {
+        toast({ title: "Joining Circle...", description: "Adding your wallet to the group members." });
+        const joinTx = await groupContract.joinGroup();
+        await joinTx.wait();
+        toast({ title: "Joined!", description: "You are now a member. Proceeding to deposit..." });
+      }
+
+      // 2. Approve USDC transfer
       const amountInWei = ethers.parseUnits(group.contribution_amount.toString(), 6);
       const usdcContract = new ethers.Contract(USDC_ADDRESS, ERC20_ABI, signer);
       
@@ -70,22 +82,20 @@ export const RotationalSavingsCardsSection = (): JSX.Element => {
         await approveTx.wait();
       }
 
-      // 2. Call deposit on the AjooGroup contract
+      // 3. Call deposit on the AjooGroup contract
       toast({ title: "Depositing...", description: "Please confirm the deposit transaction." });
-      const groupContract = new ethers.Contract(group.contract_address, AjooGroupABI.abi, signer);
-      
       const depositTx = await groupContract.deposit();
       await depositTx.wait();
 
       toast({
-        title: "Successfully Joined!",
-        description: `You have joined ${group.name}.`,
+        title: "Successfully Joined & Contributed!",
+        description: `You have joined and paid your contribution for ${group.name}.`,
       });
       
     } catch (error: any) {
       console.error("Error joining circle:", error);
       toast({
-        title: "Join failed",
+        title: "Transaction failed",
         description: error.message || "Transaction reverted",
         variant: "destructive",
       });
@@ -111,7 +121,7 @@ export const RotationalSavingsCardsSection = (): JSX.Element => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {groups.map((poolData) => {
         const participantsTotal = 4; // Placeholder for now, could be dynamic
         const participantsCurrent = 1; // Placeholder
@@ -130,7 +140,7 @@ export const RotationalSavingsCardsSection = (): JSX.Element => {
         const isJoining = joiningGroupId === poolData.id;
 
         return (
-          <Card key={poolData.id} className="w-full max-w-[470px] bg-[#1212124c] rounded-3xl overflow-hidden border-[0.2px] border-[#cbcfd299]">
+          <Card key={poolData.id} className="w-full bg-[#1212124c] rounded-3xl overflow-hidden border-[0.2px] border-[#cbcfd299] transition-transform hover:scale-[1.02]">
             <CardContent className="p-8 space-y-6">
               <div className="flex items-center gap-2.5">
                 <Avatar className="w-[46px] h-[46px] bg-primary-400">

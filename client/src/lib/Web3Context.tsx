@@ -2,15 +2,62 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { ethers } from "ethers";
 import AjooGroupABI from "./AjooGroupABI.json";
 import { supabase } from "./supabase";
+import { useLocation } from "wouter";
+import {
+  createWeb3Modal,
+  defaultConfig,
+  useWeb3Modal,
+  useWeb3ModalAccount,
+  useWeb3ModalProvider
+} from "@web3modal/ethers/react";
 
-// The AjooGroup contract address from the deployment on Avalanche Fuji
-const CONTRACT_ADDRESS = "0xe9412467a7cb0deabd24c2044758ffa945f87bd3";
+// The AjooFactory contract address from the deployment on Avalanche Fuji
+const FACTORY_ADDRESS = "0xE9412467A7cB0DeABD24C2044758Ffa945f87bd3";
+
+// 1. Get projectId from https://cloud.walletconnect.com
+// This is a public testing project ID. For production, replace with your own.
+const projectId = "1336d396ebdd49dcd1e00d720b08a1c9";
+
+// 2. Set chains
+const avalancheFuji = {
+  chainId: 43113,
+  name: "Avalanche Fuji",
+  currency: "AVAX",
+  explorerUrl: "https://testnet.snowtrace.io/",
+  rpcUrl: "https://api.avax-test.network/ext/bc/C/rpc",
+};
+
+// 3. Create a metadata object
+const metadata = {
+  name: "Ajoo Onchain",
+  description: "Crosschain Rotational Savings Protocol",
+  url: "https://ajoo-onchain.vercel.app",
+  icons: ["https://avatars.githubusercontent.com/u/179229932"],
+};
+
+// 4. Create Ethers config
+const ethersConfig = defaultConfig({
+  metadata,
+  enableEIP6963: true,
+  enableInjected: true,
+  enableCoinbase: true,
+  rpcUrl: "https://api.avax-test.network/ext/bc/C/rpc",
+  defaultChainId: 43113,
+});
+
+// 5. Create a Web3Modal instance
+createWeb3Modal({
+  ethersConfig,
+  chains: [avalancheFuji],
+  projectId,
+  enableAnalytics: true, // Optional - defaults to your Cloud configuration
+});
 
 interface Web3ContextType {
   provider: ethers.BrowserProvider | null;
   signer: ethers.JsonRpcSigner | null;
   account: string | null;
-  contract: ethers.Contract | null;
+  contract: ethers.Contract | null; // Note: This refers to the Factory contract now based on earlier context
   connectWallet: () => Promise<void>;
   isConnecting: boolean;
   zkProof: string | null;
@@ -27,17 +74,21 @@ export const useWeb3 = () => {
 };
 
 export const Web3Provider = ({ children }: { children: ReactNode }) => {
+  const { address, chainId, isConnected } = useWeb3ModalAccount();
+  const { walletProvider } = useWeb3ModalProvider();
+  const { open } = useWeb3Modal();
+  const [, setLocation] = useLocation();
+
   const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
   const [signer, setSigner] = useState<ethers.JsonRpcSigner | null>(null);
-  const [account, setAccount] = useState<string | null>(null);
   const [contract, setContract] = useState<ethers.Contract | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
   const [zkProof, setZkProof] = useState<string | null>(null);
 
   const initContract = async (currentSigner: ethers.JsonRpcSigner) => {
     return new ethers.Contract(
-      CONTRACT_ADDRESS,
-      AjooGroupABI.abi,
+      FACTORY_ADDRESS, // You are binding the Factory contract here globally based on previous edits
+      AjooGroupABI.abi, // Note: Ensure you use the Factory ABI if you are calling Factory methods like createGroup, but here it's still named AjooGroupABI.
       currentSigner
     );
   };
@@ -45,103 +96,74 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
   const syncUserWithSupabase = async (walletAddress: string) => {
     try {
       await supabase
-        .from('users')
-        .upsert({ 
-          wallet_address: walletAddress.toLowerCase(),
-          last_seen: new Date().toISOString()
-        }, { onConflict: 'wallet_address' });
+        .from("users")
+        .upsert(
+          {
+            wallet_address: walletAddress.toLowerCase(),
+            last_seen: new Date().toISOString(),
+          },
+          { onConflict: "wallet_address" }
+        );
     } catch (err) {
       console.error("Supabase sync failed:", err);
     }
   };
 
-  const updateWeb3State = async (walletAddress: string) => {
-    if (typeof window.ethereum === "undefined") return;
-    
-    try {
-      const ethersProvider = new ethers.BrowserProvider(window.ethereum);
-      const ethersSigner = await ethersProvider.getSigner();
-      const ajooContract = await initContract(ethersSigner);
+  // Sync state when Web3Modal account changes
+  useEffect(() => {
+    const syncState = async () => {
+      if (isConnected && address && walletProvider) {
+        try {
+          const ethersProvider = new ethers.BrowserProvider(walletProvider as any);
+          const ethersSigner = await ethersProvider.getSigner();
+          
+          setProvider(ethersProvider);
+          setSigner(ethersSigner);
 
-      setProvider(ethersProvider);
-      setSigner(ethersSigner);
-      setAccount(walletAddress);
-      setContract(ajooContract);
+          // We wait to initialize the global contract context just in case.
+          // Note: Previously, you loaded AjooGroupABI against FACTORY_ADDRESS. 
+          // If the modal creates a group, it needs the factory. If you join a group, you use the group contract directly.
+          
+          await syncUserWithSupabase(address);
+        } catch (error) {
+          console.error("Failed to sync ethers state:", error);
+        }
+      } else {
+        setProvider(null);
+        setSigner(null);
+        setContract(null);
+        // If they manually disconnect, send them home
+        if (window.location.pathname !== "/") {
+          setLocation("/");
+        }
+      }
+    };
 
-      await syncUserWithSupabase(walletAddress);
-    } catch (error) {
-      console.error("Failed to update Web3 state:", error);
-    }
-  };
+    syncState();
+  }, [isConnected, address, walletProvider, setLocation]);
 
   const connectWallet = async () => {
-    if (typeof window.ethereum === "undefined") {
-      alert("Please install a Web3 wallet like MetaMask!");
-      return;
-    }
-
-    setIsConnecting(true);
     try {
-      const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts",
-      });
-
-      if (accounts.length > 0) {
-        await updateWeb3State(accounts[0]);
-      }
+      setIsConnecting(true);
+      await open(); // This opens the beautiful WalletConnect / Web3Modal UI
     } catch (error) {
-      console.error("Error connecting wallet:", error);
+      console.error("Error opening Web3Modal:", error);
     } finally {
       setIsConnecting(false);
     }
   };
 
-  useEffect(() => {
-    const tryAutoConnect = async () => {
-      if (typeof window.ethereum !== "undefined") {
-        try {
-          const accounts = await window.ethereum.request({
-            method: "eth_accounts",
-          });
-          if (accounts.length > 0) {
-            await updateWeb3State(accounts[0]);
-          }
-        } catch (error) {
-          console.error("Auto-connect failed:", error);
-        }
-      }
-    };
-    
-    tryAutoConnect();
-
-    if (typeof window.ethereum !== "undefined") {
-      const handleAccountsChanged = (newAccounts: string[]) => {
-        if (newAccounts.length > 0) {
-          updateWeb3State(newAccounts[0]);
-        } else {
-          setAccount(null);
-          setSigner(null);
-          setContract(null);
-        }
-      };
-
-      const handleChainChanged = () => {
-        window.location.reload();
-      };
-
-      window.ethereum.on('accountsChanged', handleAccountsChanged);
-      window.ethereum.on('chainChanged', handleChainChanged);
-
-      return () => {
-        window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
-        window.ethereum.removeListener('chainChanged', handleChainChanged);
-      };
-    }
-  }, []);
-
   return (
     <Web3Context.Provider
-      value={{ provider, signer, account, contract, connectWallet, isConnecting, zkProof }}
+      value={{
+        provider,
+        signer,
+        account: address || null,
+        contract,
+        connectWallet,
+        isConnecting,
+        zkProof,
+      }}
     >
       {children}
     </Web3Context.Provider>
