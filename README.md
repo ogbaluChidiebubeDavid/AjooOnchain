@@ -11,7 +11,7 @@ AJOO is a decentralized fintech protocol that digitizes traditional West African
 - **Decentralized Rotational Savings:** Create or join automated "Ajo" circles where members contribute stablecoins at regular intervals.
 - **DeFi Yield Generation:** Pooled funds are automatically supplied to **Aave V3** on Avalanche, generating interest for all members while they wait for their payout.
 - **Automated Payouts:** Powered by **Chainlink Automation**, the protocol automatically triggers payouts to the next person in the rotation as soon as conditions are met.
-- **Web3 Native Identity:** Full integration with **Web3Modal (WalletConnect)**, allowing users to connect via MetaMask, Trust Wallet, or by scanning a QR code from their mobile device.
+- **Web3 Native Identity:** Full integration with **Web3Modal (Reown AppKit)**, allowing users to connect via MetaMask, Trust Wallet, Coinbase Wallet, or by scanning a QR code from their mobile device.
 - **Off-Chain Metadata Sync:** Supabase integration ensures fast dashboard loading and secure storage of non-critical group details (names, descriptions).
 - **Graceful Liquidation:** Built-in safety mechanisms to protect honest contributors if a member fails to pay their share.
 
@@ -25,13 +25,36 @@ AJOO is a decentralized fintech protocol that digitizes traditional West African
 
 ### 2. Frontend (React + Vite)
 - A high-performance, responsive dashboard built with **TypeScript**, **Tailwind CSS**, and **shadcn/ui**.
-- **`Web3Context`**: Manages the global connection state, provider synchronization, and user identity across the application.
+- **`Web3Context`**: Manages the global connection state, provider synchronization, and user identity across the application using Web3Modal.
 - **TanStack Query**: Handles efficient data fetching and caching from both the blockchain and Supabase.
 
 ### 3. Backend & Infrastructure
 - **Supabase**: Serves as the off-chain database for group metadata and user profiles.
 - **Chainlink Keepers**: Monitor and execute `performUpkeep` on circles to automate the "Remittance Day" payouts.
 - **Aave V3**: The underlying yield source for all pooled contributions.
+
+---
+
+## 🛠️ Tools Used
+
+The following tools and technologies were used to build AJOO Onchain:
+
+- **Smart Contracts:** Solidity, Foundry (Forge, Cast, Anvil).
+- **Frontend:** React, Vite, TypeScript, Tailwind CSS, shadcn/ui, Framer Motion.
+- **Web3 Integration:** Ethers.js (v6), Web3Modal / Reown AppKit, WalletConnect.
+- **Database & Off-chain:** Supabase (PostgreSQL, Edge Functions, Realtime).
+- **DeFi Protocols:** Aave V3 (Avalanche Fuji).
+- **Infrastructure:** Chainlink Automation (Keepers), Vercel (Deployment).
+
+---
+
+## 🔗 On-Chain Verification
+
+The core Factory contract is deployed and verified on the **Avalanche Fuji Testnet**:
+
+- **Factory Address:** `0xE9412467A7cB0DeABD24C2044758Ffa945f87bd3`
+- **Snowtrace Explorer:** [Verify on Snowtrace](https://testnet.snowtrace.io/address/0xE9412467A7cB0DeABD24C2044758Ffa945f87bd3)
+- **Avalanche Explorer:** [Verify on Subnet Explorer](https://subnets-test.avax.network/c-chain/address/0xE9412467A7cB0DeABD24C2044758Ffa945f87bd3)
 
 ---
 
@@ -60,7 +83,7 @@ AJOO is a decentralized fintech protocol that digitizes traditional West African
    ```env
    VITE_SUPABASE_URL=your_supabase_url
    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-   DATABASE_URL=your_postgresql_connection_string
+   VITE_PROJECT_ID=your_walletconnect_project_id
    ```
 
 4. **Start the development server:**
@@ -68,24 +91,12 @@ AJOO is a decentralized fintech protocol that digitizes traditional West African
    npm run dev
    ```
 
-### Smart Contract Deployment
-
-1. **Compile contracts:**
-   ```bash
-   cd smart_contract
-   forge build
-   ```
-
-2. **Deploy to Avalanche Fuji:**
-   ```bash
-   forge script script/Deploy.s.sol --rpc-url <FUJI_RPC_URL> --broadcast --private-key <YOUR_PRIVATE_KEY>
-   ```
-
 ---
 
-## 🛠️ Deployment (Vercel)
+## 💡 Troubleshooting
 
-The frontend is optimized for Vercel deployment. Ensure you add your `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` to the Vercel project environment variables.
+### Blank Screen on Deployment
+If the application displays a blank screen in production, ensure that the browser polyfills for `global` and `process` are present in `index.html`. This is required for some Web3 libraries (like WalletConnect) to function correctly in a Vite environment.
 
 ---
 
