@@ -1,6 +1,7 @@
 import { ChevronDownIcon, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { Link } from "wouter";
 
 const navigationItems = [
   { label: "Home", active: true, hasDropdown: false },
@@ -47,14 +48,16 @@ export const HeroSection = (): JSX.Element => {
             ))}
           </nav>
 
-          <button
-            className="hidden lg:inline-flex items-center justify-center px-5 py-2 bg-[#0f766e] rounded-3xl hover:bg-[#0f766e]/90 transition-colors"
-            data-testid="button-launch-app-header"
-          >
-            <span className="font-['Inter',sans-serif] font-normal text-white text-[18px] leading-[28px] whitespace-nowrap">
-              Launch App
-            </span>
-          </button>
+          <Link href="/dashboard">
+            <button
+              className="hidden lg:inline-flex items-center justify-center px-5 py-2 bg-[#0f766e] rounded-3xl hover:bg-[#0f766e]/90 transition-colors cursor-pointer"
+              data-testid="button-launch-app-header"
+            >
+              <span className="font-['Inter',sans-serif] font-normal text-white text-[18px] leading-[28px] whitespace-nowrap">
+                Launch App
+              </span>
+            </button>
+          </Link>
 
           <button
             className="lg:hidden text-white p-2"
@@ -86,14 +89,16 @@ export const HeroSection = (): JSX.Element => {
                   )}
                 </div>
               ))}
-              <button
-                className="inline-flex items-center justify-center px-5 py-2 bg-[#0f766e] rounded-3xl mt-2 w-fit"
-                data-testid="button-launch-app-mobile"
-              >
-                <span className="font-['Inter',sans-serif] font-normal text-white text-[16px] leading-[24px]">
-                  Launch App
-                </span>
-              </button>
+              <Link href="/dashboard">
+                <button
+                  className="inline-flex items-center justify-center px-5 py-2 bg-[#0f766e] rounded-3xl mt-2 w-fit cursor-pointer"
+                  data-testid="button-launch-app-mobile"
+                >
+                  <span className="font-['Inter',sans-serif] font-normal text-white text-[16px] leading-[24px]">
+                    Launch App
+                  </span>
+                </button>
+              </Link>
             </nav>
           </div>
         )}
@@ -118,14 +123,16 @@ export const HeroSection = (): JSX.Element => {
               your rotational savings.
             </p>
 
-            <button
-              className="inline-flex items-center justify-center px-5 py-2 bg-[#0f766e] rounded-3xl hover:bg-[#0f766e]/90 transition-colors"
-              data-testid="button-launch-app-hero"
-            >
-              <span className="font-['Inter',sans-serif] font-normal text-white text-[18px] leading-[28px]">
-                Launch App
-              </span>
-            </button>
+            <Link href="/dashboard">
+              <button
+                className="inline-flex items-center justify-center px-5 py-2 bg-[#0f766e] rounded-3xl hover:bg-[#0f766e]/90 transition-colors cursor-pointer"
+                data-testid="button-launch-app-hero"
+              >
+                <span className="font-['Inter',sans-serif] font-normal text-white text-[18px] leading-[28px]">
+                  Launch App
+                </span>
+              </button>
+            </Link>
           </div>
 
           <div className="flex-shrink-0 relative w-full max-w-[500px] lg:max-w-[706px]">
