@@ -1,255 +1,157 @@
 import { DashboardLayout } from "./DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
+import { useWeb3 } from "@/lib/Web3Context";
+import { Loader2, Wallet, PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-
-const statsData = [
-  {
-    label: "ACTIVE CIRCLE",
-    value: "4",
-    description: "Rotational Savings",
-  },
-  {
-    label: "YIELD POOL",
-    value: "3",
-    description: "Earning Continuously",
-  },
-  {
-    label: "NEXT PAYOUT",
-    value: "5 days",
-    description: "Ajo Pool 2",
-  },
-  {
-    label: "TOTAL PNL",
-    value: "+$2000.35",
-    description: "All Positions",
-  },
-];
-
-const pools = [
-  {
-    name: "Ajo Pool",
-    host: "0x2f3a...d76c",
-    chain: "AVALANCHE",
-    cycle: "90 days Cycle",
-    contribution: "200",
-    contributionCurrency: "USDC",
-    poolTotal: "800",
-    poolTotalCurrency: "USDC",
-    participants: { current: 2, total: 4 },
-    startsIn: "3 days",
-    stakingInfo: "Staking rewards distributed on payout day",
-    spotsLeft: 2,
-    status: "joining",
-  },
-  {
-    name: "Ajo Pool 2",
-    host: "0x4b7e...a12d",
-    chain: "AVALANCHE",
-    cycle: "30 days Cycle",
-    contribution: "500",
-    contributionCurrency: "USDC",
-    poolTotal: "2,000",
-    poolTotalCurrency: "USDC",
-    participants: { current: 3, total: 4 },
-    startsIn: "5 days",
-    stakingInfo: "Next payout in 5 days — you are position 2",
-    spotsLeft: 1,
-    status: "active",
-  },
-  {
-    name: "Community Circle",
-    host: "0x9c1f...b84e",
-    chain: "AVALANCHE",
-    cycle: "60 days Cycle",
-    contribution: "100",
-    contributionCurrency: "USDC",
-    poolTotal: "400",
-    poolTotalCurrency: "USDC",
-    participants: { current: 1, total: 4 },
-    startsIn: "10 days",
-    stakingInfo: "Earn staking rewards while you wait for payout",
-    spotsLeft: 3,
-    status: "joining",
-  },
-];
+import { Link } from "wouter";
+import { CreateCircleModal } from "./components/CreateCircleModal";
 
 export const DashboardRotationalSavings = (): JSX.Element => {
+  const { account, connectWallet, isConnecting } = useWeb3();
+
+  const { data: groups, isLoading } = useQuery({
+    queryKey: ["groups", "rotational"],
+    enabled: !!account,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("groups")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  if (!account) {
+    return (
+      <DashboardLayout>
+        <div className="flex flex-col items-center justify-center min-h-[75vh] gap-8 px-6 text-center">
+          <div className="p-8 bg-[#1a1a1a] rounded-3xl border border-white/10 shadow-2xl">
+            <Wallet className="w-16 h-12 text-primary-300" />
+          </div>
+          <div className="max-w-md space-y-4">
+            <h2 className="text-3xl lg:text-4xl font-bold text-white font-title-xl tracking-tight">
+              Connect to View Circles
+            </h2>
+            <p className="text-surface-500 font-body-md text-lg leading-relaxed">
+              Join the future of rotational savings. Connect your wallet to manage your circles and track contributions.
+            </p>
+          </div>
+          <Button 
+            onClick={() => connectWallet()}
+            disabled={isConnecting}
+            className="bg-primary-300 hover:bg-primary-400 text-primary-950 font-bold px-10 py-8 rounded-2xl text-xl transition-all"
+          >
+            {isConnecting ? "CONNECTING..." : "CONNECT WALLET"}
+          </Button>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  const activeCirclesCount = groups?.length || 0;
+
   return (
     <DashboardLayout>
-      <header className="pt-8 lg:pt-[100px] pb-8 lg:pb-12">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <h1 className="[font-family:'Syne',Helvetica] font-semibold text-[#f7f9fd] text-2xl lg:text-[34px] tracking-[0] leading-[48px]">
-            Rotational Savings
-          </h1>
-          <div className="flex items-center gap-3 flex-wrap">
-            <button className="bg-[rgba(15,118,110,0.15)] border-[0.5px] border-[#87bbb7] border-solid flex items-center gap-1 px-6 py-3 rounded-xl">
-              <span className="text-[#87bbb7] text-sm leading-[20px] font-['Inter',sans-serif] whitespace-nowrap">
-                + JOIN A CIRCLE
-              </span>
-            </button>
-            <button className="bg-[rgba(15,118,110,0.15)] border-[0.5px] border-[#87bbb7] border-solid flex items-center gap-1 px-6 py-3 rounded-xl">
-              <span className="text-[#87bbb7] text-sm leading-[20px] font-['Inter',sans-serif] whitespace-nowrap">
-                + CREATE A CIRCLE
-              </span>
-            </button>
+      <div className="container mx-auto px-4 max-w-[1200px] flex flex-col gap-10 lg:gap-14 py-8 lg:py-12">
+        <header className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div className="space-y-1">
+            <h1 className="[font-family:'Syne',Helvetica] font-bold text-surface-100 text-3xl lg:text-[42px] tracking-tight leading-tight">
+              Rotational Savings
+            </h1>
+            <p className="text-surface-500 font-body-md">Manage your active savings circles</p>
           </div>
-        </div>
-      </header>
+          <CreateCircleModal />
+        </header>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6">
-        {statsData.map((stat, index) => (
-          <Card
-            key={index}
-            className="bg-[rgba(18,18,18,0.3)] rounded-3xl border-[0.2px] border-solid border-[rgba(203,207,210,0.6)] overflow-hidden"
-          >
-            <CardContent className="p-5 lg:p-8 flex flex-col h-[160px] lg:h-[205px]">
-              <div className="font-['Inter',sans-serif] font-normal text-[#8e979f] text-xs lg:text-base leading-[24px]">
-                {stat.label}
-              </div>
-              <div className="mt-1.5 font-['Syne',sans-serif] font-normal text-[#87bbb7] text-xl lg:text-[34px] leading-[48px]">
-                {stat.value}
-              </div>
-              <div className="mt-auto font-['Inter',sans-serif] font-normal text-[#8e979f] text-xs lg:text-base leading-[24px]">
-                {stat.description}
-              </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+          <Card className="bg-[#1212124c] rounded-3xl border-[0.2px] border-solid border-[#cbcfd299] overflow-hidden">
+            <CardContent className="p-6 lg:p-8 flex flex-col h-[160px] justify-center">
+              <p className="font-['Inter',sans-serif] font-semibold text-[#8e979f] text-xs uppercase tracking-wider">
+                Active Circles
+              </p>
+              <p className="font-['Syne',sans-serif] font-bold text-primary-100 text-2xl lg:text-[34px] leading-[48px] tracking-tight">
+                {activeCirclesCount}
+              </p>
             </CardContent>
           </Card>
-        ))}
+          {/* Other stat cards could go here */}
+        </div>
+
+        <section>
+          <div className="flex items-center gap-4 mb-8">
+            <p className="font-['Inter',sans-serif] font-semibold text-[#8e979f] text-xs tracking-[1.2px] leading-[18px] whitespace-nowrap uppercase">
+              Your Circles
+            </p>
+            <div className="flex-1 h-[0.2px] bg-[#8e979f]/30" />
+          </div>
+
+          {isLoading ? (
+            <div className="flex justify-center py-12">
+              <Loader2 className="w-8 h-8 animate-spin text-primary-300" />
+            </div>
+          ) : !groups || groups.length === 0 ? (
+            <div className="text-center py-16 bg-[#1212124c] rounded-3xl border border-dashed border-[#cbcfd299]">
+              <p className="text-surface-500 mb-6 font-body-md">You haven't joined or created any circles yet.</p>
+              <CreateCircleModal />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {groups.map((group) => {
+                const cycleDays = group.cycle_duration ? Math.floor(group.cycle_duration / (24 * 60 * 60)) : 0;
+                const participantsTotal = 4;
+                const participantsCurrent = 1;
+
+                return (
+                  <Card key={group.id} className="w-full bg-[#1212124c] rounded-3xl overflow-hidden border-[0.2px] border-[#cbcfd299] hover:border-primary-300/50 transition-all">
+                    <CardContent className="p-8 space-y-6">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-full bg-primary-400 flex items-center justify-center font-bold text-primary-200 text-xl">
+                          {group.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="flex flex-col">
+                          <h3 className="font-['Syne',sans-serif] font-bold text-white text-xl leading-tight">
+                            {group.name}
+                          </h3>
+                          <p className="text-surface-500 text-sm">
+                            Hosted by {group.creator_address.slice(0, 6)}...{group.creator_address.slice(-4)}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <Badge className="bg-[#6e17174c] text-danger-200 border-[#c92929]/50">AVALANCHE</Badge>
+                        <Badge className="bg-[#33383d4c] text-surface-500 border-[#8e979f]/50">{cycleDays} Day Cycle</Badge>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="p-4 bg-black/20 rounded-2xl border border-white/5">
+                          <p className="text-[#8e979f] text-[10px] uppercase tracking-wider mb-1">Contribution</p>
+                          <p className="text-white font-bold text-lg">{group.contribution_amount} USDC</p>
+                        </div>
+                        <div className="p-4 bg-black/20 rounded-2xl border border-white/5">
+                          <p className="text-[#8e979f] text-[10px] uppercase tracking-wider mb-1">Pool Total</p>
+                          <p className="text-white font-bold text-lg">{group.contribution_amount * participantsTotal} USDC</p>
+                        </div>
+                      </div>
+
+                      <Link href={`/dashboard/circle/${group.id}`}>
+                        <Button className="w-full bg-primary-300 hover:bg-primary-400 text-primary-950 font-bold py-6 rounded-xl">
+                          MANAGE CIRCLE
+                        </Button>
+                      </Link>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+        </section>
+
+        <div className="pb-16 lg:pb-24" />
       </div>
-
-      <section className="mt-8 lg:mt-12">
-        <div className="flex items-center gap-4 mb-6">
-          <p className="font-['Inter',sans-serif] font-normal text-[#8e979f] text-xs tracking-[1.2px] leading-[18px] whitespace-nowrap">
-            YOUR CIRCLES
-          </p>
-          <div className="flex-1 h-[0.2px] bg-[#8e979f]" />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {pools.map((pool, i) => (
-            <Card
-              key={i}
-              className="bg-[rgba(18,18,18,0.3)] rounded-3xl border-[0.2px] border-[rgba(203,207,210,0.6)] overflow-hidden"
-            >
-              <CardContent className="p-6 lg:p-8 flex flex-col gap-5">
-                <div className="flex items-center gap-3">
-                  <Avatar className="w-[46px] h-[46px] bg-[#052725]">
-                    <AvatarFallback className="bg-[#052725] text-[#0f766e] font-['Syne',sans-serif] text-xl font-normal">
-                      A
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-col gap-0.5">
-                    <h3 className="font-['Syne',sans-serif] font-normal text-white text-xl leading-7">
-                      {pool.name}
-                    </h3>
-                    <p className="font-['Inter',sans-serif] font-normal text-[#8e979f] text-sm leading-5">
-                      Hosted by {pool.host}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 flex-wrap">
-                  <Badge className="h-auto bg-[rgba(110,23,23,0.3)] rounded border-[0.5px] border-solid border-[#c92929] text-[#c92929] text-xs hover:bg-[rgba(110,23,23,0.3)]">
-                    {pool.chain}
-                  </Badge>
-                  <Badge className="h-auto bg-[rgba(51,56,61,0.3)] rounded border-[0.5px] border-solid border-[#8e979f] text-[#8e979f] text-xs hover:bg-[rgba(51,56,61,0.3)]">
-                    {pool.cycle}
-                  </Badge>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <Card className="bg-[rgba(18,18,18,0.3)] rounded-2xl border-[0.2px] border-[rgba(203,207,210,0.6)]">
-                    <CardContent className="p-4">
-                      <p className="font-['Inter',sans-serif] font-normal text-[#8e979f] text-xs leading-5">
-                        CONTRIBUTION
-                      </p>
-                      <div className="flex items-end gap-1 mt-0.5">
-                        <span className="font-['Syne',sans-serif] font-normal text-[#f7f9fd] text-2xl leading-9">
-                          {pool.contribution}
-                        </span>
-                        <span className="font-['Inter',sans-serif] font-normal text-[#8e979f] text-sm leading-6 mb-0.5">
-                          {pool.contributionCurrency}
-                        </span>
-                      </div>
-                    </CardContent>
-                  </Card>
-                  <Card className="bg-[rgba(18,18,18,0.3)] rounded-2xl border-[0.2px] border-[rgba(203,207,210,0.6)]">
-                    <CardContent className="p-4">
-                      <p className="font-['Inter',sans-serif] font-normal text-[#8e979f] text-xs leading-5">
-                        POOL TOTAL
-                      </p>
-                      <div className="flex items-end gap-1 mt-0.5">
-                        <span className="font-['Syne',sans-serif] font-normal text-[#f7f9fd] text-2xl leading-9">
-                          {pool.poolTotal}
-                        </span>
-                        <span className="font-['Inter',sans-serif] font-normal text-[#8e979f] text-sm leading-6 mb-0.5">
-                          {pool.poolTotalCurrency}
-                        </span>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex flex-col gap-1.5">
-                    <p className="font-['Inter',sans-serif] font-normal text-[#8e979f] text-xs leading-5">
-                      PARTICIPANTS ({pool.participants.current}/
-                      {pool.participants.total})
-                    </p>
-                    <div className="flex items-center gap-1">
-                      {Array.from({ length: pool.participants.total }).map(
-                        (_, idx) => (
-                          <div
-                            key={idx}
-                            className={`w-3 h-3 rounded-sm ${
-                              idx < pool.participants.current
-                                ? "bg-[#0f766e]"
-                                : "bg-[#d9d9d9]"
-                            }`}
-                          />
-                        )
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex flex-col items-end">
-                    <p className="font-['Inter',sans-serif] font-normal text-[#8e979f] text-xs leading-5">
-                      STARTS IN
-                    </p>
-                    <p className="font-['Inter',sans-serif] font-normal text-white text-base leading-6">
-                      {pool.startsIn}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2.5 p-3 bg-[rgba(32,35,39,0.7)] rounded-xl">
-                  <img
-                    className="w-3.5 h-[12px]"
-                    alt="Info"
-                    src="/figmaAssets/group-3-1.png"
-                  />
-                  <p className="font-['Inter',sans-serif] font-normal text-white text-xs leading-5">
-                    {pool.stakingInfo}
-                  </p>
-                </div>
-
-                {pool.status === "active" ? (
-                  <Button className="w-full h-auto bg-[rgba(15,118,110,0.15)] rounded-xl border-[0.5px] border-[#87bbb7] text-[#87bbb7] font-['Inter',sans-serif] text-sm py-3 hover:bg-[rgba(15,118,110,0.25)]">
-                    MANAGE CIRCLE
-                  </Button>
-                ) : (
-                  <Button className="w-full h-auto bg-[rgba(15,118,110,0.15)] rounded-xl border-[0.5px] border-[#87bbb7] text-[#87bbb7] font-['Inter',sans-serif] text-sm py-3 hover:bg-[rgba(15,118,110,0.25)]">
-                    JOIN CIRCLE — {pool.spotsLeft} SPOTS LEFT
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      <div className="pb-16 lg:pb-24" />
     </DashboardLayout>
   );
 };

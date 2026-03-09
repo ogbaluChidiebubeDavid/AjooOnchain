@@ -97,10 +97,11 @@ export const DashboardAssets = (): JSX.Element => {
   return (
     <DashboardLayout>
       <div className="container mx-auto px-4 max-w-[1200px] flex flex-col gap-12 lg:gap-16 py-8 lg:py-12">
-        <header className="flex items-center justify-between">
+        <header className="flex flex-col gap-2">
           <h1 className="[font-family:'Syne',Helvetica] font-semibold text-surface-100 text-2xl lg:text-[34px] tracking-[0] leading-[48px]">
             YOUR ASSETS
           </h1>
+          <p className="text-primary-300 text-sm font-medium tracking-wide">LIVE PORTFOLIO TRACKING</p>
         </header>
 
         <Card className="bg-[#1212124c] rounded-3xl border-[0.2px] border-solid border-[#cbcfd299] overflow-hidden">
