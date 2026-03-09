@@ -28,16 +28,21 @@ AJOO is a decentralized fintech protocol that digitizes traditional West African
 - **`Web3Context`**: Manages the global connection state, provider synchronization, and user identity across the application using Web3Modal.
 - **TanStack Query**: Handles efficient data fetching and caching from both the blockchain and Supabase.
 
-### 3. Backend & Infrastructure
-- **Supabase**: Serves as the off-chain database for group metadata and user profiles.
-- **Chainlink Keepers**: Monitor and execute `performUpkeep` on circles to automate the "Remittance Day" payouts.
-- **Aave V3**: The underlying yield source for all pooled contributions.
+---
+
+## 🔺 Avalanche Technical Stack
+
+AJOO leverages the high-performance Avalanche ecosystem to provide a seamless and scalable savings experience:
+
+- **Avalanche C-Chain:** Our smart contracts are deployed on the C-Chain for EVM compatibility and sub-second finality.
+- **Avalanche Fuji Testnet:** The current environment for testing and public demonstration.
+- **Avalanche Warp Messaging (AWM):** (Architecture Plan) Utilizing AWM for trustless cross-chain savings communication.
+- **Avalanche Teleporter:** (Architecture Plan) Built on AWM to facilitate cross-subnet asset transfers and data sharing.
+- **Core Wallet Integration:** Optimized for the native Avalanche wallet experience.
 
 ---
 
-## 🛠️ Tools Used
-
-The following tools and technologies were used to build AJOO Onchain:
+## 🛠️ General Tools Used
 
 - **Smart Contracts:** Solidity, Foundry (Forge, Cast, Anvil).
 - **Frontend:** React, Vite, TypeScript, Tailwind CSS, shadcn/ui, Framer Motion.
@@ -53,8 +58,8 @@ The following tools and technologies were used to build AJOO Onchain:
 The core Factory contract is deployed and verified on the **Avalanche Fuji Testnet**:
 
 - **Factory Address:** `0xE9412467A7cB0DeABD24C2044758Ffa945f87bd3`
-- **Snowtrace Explorer:** [Verify on Snowtrace](https://testnet.snowtrace.io/address/0xE9412467A7cB0DeABD24C2044758Ffa945f87bd3)
-- **Avalanche Explorer:** [Verify on Subnet Explorer](https://subnets-test.avax.network/c-chain/address/0xE9412467A7cB0DeABD24C2044758Ffa945f87bd3)
+- **Snowtrace Explorer:** [https://testnet.snowtrace.io/address/0xE9412467A7cB0DeABD24C2044758Ffa945f87bd3](https://testnet.snowtrace.io/address/0xE9412467A7cB0DeABD24C2044758Ffa945f87bd3)
+- **Avalanche Explorer:** [https://subnets-test.avax.network/c-chain/address/0xE9412467A7cB0DeABD24C2044758Ffa945f87bd3](https://subnets-test.avax.network/c-chain/address/0xE9412467A7cB0DeABD24C2044758Ffa945f87bd3)
 
 ---
 
