@@ -2,7 +2,6 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { ethers } from "ethers";
 import AjooGroupABI from "./AjooGroupABI.json";
 import { supabase } from "./supabase";
-import { useLocation } from "wouter";
 
 // The AjooGroup contract address from the deployment on Avalanche Fuji
 const CONTRACT_ADDRESS = "0xe9412467a7cb0deabd24c2044758ffa945f87bd3";
@@ -14,7 +13,7 @@ interface Web3ContextType {
   contract: ethers.Contract | null;
   connectWallet: () => Promise<void>;
   isConnecting: boolean;
-  zkProof: string | null; // For future ZKLogin support
+  zkProof: string | null;
 }
 
 const Web3Context = createContext<Web3ContextType | null>(null);
@@ -34,7 +33,6 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
   const [contract, setContract] = useState<ethers.Contract | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
   const [zkProof, setZkProof] = useState<string | null>(null);
-  const [, setLocation] = useLocation();
 
   const initContract = async (currentSigner: ethers.JsonRpcSigner) => {
     return new ethers.Contract(
@@ -46,14 +44,12 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
 
   const syncUserWithSupabase = async (walletAddress: string) => {
     try {
-      const { data, error } = await supabase
+      await supabase
         .from('users')
         .upsert({ 
           wallet_address: walletAddress.toLowerCase(),
           last_seen: new Date().toISOString()
         }, { onConflict: 'wallet_address' });
-
-      if (error) console.error("Error syncing user with Supabase:", error);
     } catch (err) {
       console.error("Supabase sync failed:", err);
     }
@@ -62,26 +58,25 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
   const updateWeb3State = async (walletAddress: string) => {
     if (typeof window.ethereum === "undefined") return;
     
-    const ethersProvider = new ethers.BrowserProvider(window.ethereum);
-    const ethersSigner = await ethersProvider.getSigner();
-    const ajooContract = await initContract(ethersSigner);
+    try {
+      const ethersProvider = new ethers.BrowserProvider(window.ethereum);
+      const ethersSigner = await ethersProvider.getSigner();
+      const ajooContract = await initContract(ethersSigner);
 
-    setProvider(ethersProvider);
-    setSigner(ethersSigner);
-    setAccount(walletAddress);
-    setContract(ajooContract);
+      setProvider(ethersProvider);
+      setSigner(ethersSigner);
+      setAccount(walletAddress);
+      setContract(ajooContract);
 
-    await syncUserWithSupabase(walletAddress);
-    
-    // Redirect to dashboard if currently on landing page
-    if (window.location.pathname === "/") {
-      setLocation("/dashboard");
+      await syncUserWithSupabase(walletAddress);
+    } catch (error) {
+      console.error("Failed to update Web3 state:", error);
     }
   };
 
   const connectWallet = async () => {
     if (typeof window.ethereum === "undefined") {
-      alert("Please install a Web3 wallet like MetaMask to use this feature!");
+      alert("Please install a Web3 wallet like MetaMask!");
       return;
     }
 
@@ -119,22 +114,28 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
     
     tryAutoConnect();
 
-    // Setup network listener
     if (typeof window.ethereum !== "undefined") {
-      window.ethereum.on('accountsChanged', (newAccounts: string[]) => {
+      const handleAccountsChanged = (newAccounts: string[]) => {
         if (newAccounts.length > 0) {
           updateWeb3State(newAccounts[0]);
         } else {
           setAccount(null);
           setSigner(null);
           setContract(null);
-          setLocation("/");
         }
-      });
-      
-      window.ethereum.on('chainChanged', () => {
-        window.location.reload(); // Chain change usually requires a fresh load
-      });
+      };
+
+      const handleChainChanged = () => {
+        window.location.reload();
+      };
+
+      window.ethereum.on('accountsChanged', handleAccountsChanged);
+      window.ethereum.on('chainChanged', handleChainChanged);
+
+      return () => {
+        window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
+        window.ethereum.removeListener('chainChanged', handleChainChanged);
+      };
     }
   }, []);
 

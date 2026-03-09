@@ -1,8 +1,7 @@
-import { ChevronDownIcon, Menu, X, Wallet } from "lucide-react";
+import { ChevronDownIcon, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { Link } from "wouter";
-import { useWeb3 } from "@/lib/Web3Context";
 
 const navigationItems = [
   { label: "Home", active: true, hasDropdown: false },
@@ -14,7 +13,6 @@ const navigationItems = [
 export const HeroSection = (): JSX.Element => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const heroContent = useScrollReveal(0.1);
-  const { account, connectWallet, isConnecting } = useWeb3();
 
   return (
     <section className="relative">
@@ -50,34 +48,16 @@ export const HeroSection = (): JSX.Element => {
             ))}
           </nav>
 
-          <div className="flex items-center">
-            <Link href="/dashboard">
-              <button
-                className="hidden lg:inline-flex items-center justify-center px-5 py-2 bg-[#0f766e] rounded-3xl hover:bg-[#0f766e]/90 transition-colors cursor-pointer"
-                data-testid="button-launch-app-header"
-              >
-                <span className="font-['Inter',sans-serif] font-normal text-white text-[18px] leading-[28px] whitespace-nowrap">
-                  Launch App
-                </span>
-              </button>
-            </Link>
-
-            {account ? (
-              <div className="hidden lg:flex items-center gap-3 ml-4 bg-[#1a1a1a] px-4 py-2 rounded-full border border-white/10">
-                <div className="w-2 h-2 rounded-full bg-green-500" />
-                <span className="text-white text-sm font-mono">{`${account.slice(0, 6)}...${account.slice(-4)}`}</span>
-              </div>
-            ) : (
-              <button
-                onClick={connectWallet}
-                disabled={isConnecting}
-                className="hidden lg:inline-flex items-center justify-center px-5 py-2 bg-white text-black font-bold rounded-3xl hover:bg-white/90 transition-colors ml-4 gap-2"
-              >
-                <Wallet className="w-4 h-4" />
-                {isConnecting ? "Connecting..." : "Connect Wallet"}
-              </button>
-            )}
-          </div>
+          <Link href="/dashboard">
+            <button
+              className="hidden lg:inline-flex items-center justify-center px-8 py-2 bg-[#0f766e] rounded-3xl hover:bg-[#0f766e]/90 transition-colors cursor-pointer"
+              data-testid="button-launch-app-header"
+            >
+              <span className="font-['Inter',sans-serif] font-normal text-white text-[18px] leading-[28px] whitespace-nowrap">
+                Launch App
+              </span>
+            </button>
+          </Link>
 
           <button
             className="lg:hidden text-white p-2"
@@ -119,16 +99,6 @@ export const HeroSection = (): JSX.Element => {
                   </span>
                 </button>
               </Link>
-              {!account && (
-                <button
-                  onClick={connectWallet}
-                  disabled={isConnecting}
-                  className="inline-flex items-center justify-center px-5 py-2 bg-white text-black font-bold rounded-3xl mt-2 w-fit gap-2"
-                >
-                  <Wallet className="w-4 h-4" />
-                  {isConnecting ? "Connecting..." : "Connect Wallet"}
-                </button>
-              )}
             </nav>
           </div>
         )}
@@ -153,29 +123,16 @@ export const HeroSection = (): JSX.Element => {
               your rotational savings.
             </p>
 
-            <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
-              <Link href="/dashboard">
-                <button
-                  className="inline-flex items-center justify-center px-8 py-3 bg-[#0f766e] rounded-3xl hover:bg-[#0f766e]/90 transition-colors cursor-pointer"
-                  data-testid="button-launch-app-hero"
-                >
-                  <span className="font-['Inter',sans-serif] font-normal text-white text-[18px] leading-[28px]">
-                    Launch App
-                  </span>
-                </button>
-              </Link>
-
-              {!account && (
-                <button
-                  onClick={connectWallet}
-                  disabled={isConnecting}
-                  className="inline-flex items-center justify-center px-8 py-3 bg-white text-black font-bold rounded-3xl hover:bg-white/90 transition-colors cursor-pointer gap-2"
-                >
-                  <Wallet className="w-5 h-5" />
-                  {isConnecting ? "Connecting..." : "Connect Wallet"}
-                </button>
-              )}
-            </div>
+            <Link href="/dashboard">
+              <button
+                className="inline-flex items-center justify-center px-8 py-3 bg-[#0f766e] rounded-3xl hover:bg-[#0f766e]/90 transition-colors cursor-pointer"
+                data-testid="button-launch-app-hero"
+              >
+                <span className="font-['Inter',sans-serif] font-normal text-white text-[18px] leading-[28px]">
+                  Launch App
+                </span>
+              </button>
+            </Link>
           </div>
 
           <div className="flex-shrink-0 relative w-full max-w-[500px] lg:max-w-[706px]">

@@ -15,11 +15,12 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { useWeb3 } from "@/lib/Web3Context";
 import { Button } from "@/components/ui/button";
-import { Wallet } from "lucide-react";
+import { Wallet, Loader2 } from "lucide-react";
 
 export const DashboardOverview = (): JSX.Element => {
   const { account, connectWallet, isConnecting } = useWeb3();
-  const { data: groups } = useQuery({
+  
+  const { data: groups, isLoading: isGroupsLoading } = useQuery({
     queryKey: ["groups", "overview"],
     enabled: !!account,
     queryFn: async () => {
@@ -34,23 +35,44 @@ export const DashboardOverview = (): JSX.Element => {
   if (!account) {
     return (
       <DashboardLayout>
-        <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6 text-center">
-          <div className="p-6 bg-[#1a1a1a] rounded-full border border-white/10">
-            <Wallet className="w-12 h-12 text-primary-300" />
+        <div className="flex flex-col items-center justify-center min-h-[70vh] gap-8 px-6">
+          <div className="relative">
+            <div className="absolute -inset-4 bg-primary-500/20 blur-xl rounded-full" />
+            <div className="relative p-8 bg-[#1a1a1a] rounded-3xl border border-white/10 shadow-2xl">
+              <Wallet className="w-16 h-12 text-primary-300" />
+            </div>
           </div>
-          <div className="max-w-md space-y-2">
-            <h2 className="text-2xl font-bold text-white font-title-xl">Connect Your Wallet</h2>
-            <p className="text-surface-500 font-body-md">
-              Please connect your Avalanche wallet to access your rotational savings, view your yield, and manage your circles.
+          
+          <div className="max-w-md text-center space-y-4">
+            <h2 className="text-3xl lg:text-4xl font-bold text-white font-title-xl tracking-tight">
+              Connect to AJOO
+            </h2>
+            <p className="text-surface-500 font-body-md text-lg leading-relaxed">
+              Your wallet is your identity. Connect to view your savings, manage circles, and track your earned yield.
             </p>
           </div>
+
           <Button 
             onClick={connectWallet}
             disabled={isConnecting}
-            className="bg-primary-300 hover:bg-primary-400 text-primary-950 font-bold px-8 py-6 rounded-xl text-lg"
+            className="group relative bg-primary-300 hover:bg-primary-400 text-primary-950 font-bold px-10 py-8 rounded-2xl text-xl transition-all hover:scale-105 active:scale-95 shadow-xl shadow-primary-900/20"
           >
-            {isConnecting ? "Connecting..." : "Connect Wallet"}
+            {isConnecting ? (
+              <>
+                <Loader2 className="mr-3 h-6 w-6 animate-spin" />
+                CONNECTING...
+              </>
+            ) : (
+              <>
+                <Wallet className="mr-3 h-6 w-6 transition-transform group-hover:rotate-12" />
+                CONNECT WALLET
+              </>
+            )}
           </Button>
+          
+          <p className="text-surface-600 text-sm font-mono">
+            Securely access the Avalanche Fuji Testnet
+          </p>
         </div>
       </DashboardLayout>
     );
@@ -58,10 +80,9 @@ export const DashboardOverview = (): JSX.Element => {
 
   const activeCirclesCount = groups?.length || 0;
   
-  // Calculate next payout based on the closest cycle end
   let nextPayout = "Pending";
   if (groups && groups.length > 0) {
-     const nextGroup = groups[0]; // Assuming ordered or closest
+     const nextGroup = groups[0];
      if (nextGroup.cycle_duration) {
        const days = Math.floor(nextGroup.cycle_duration / (24 * 60 * 60));
        nextPayout = `${days} days`;
