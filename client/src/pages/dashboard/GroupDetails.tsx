@@ -66,6 +66,7 @@ export const GroupDetails = (): JSX.Element => {
   });
 
   const handleJoin = async () => {
+    console.log("Initiating join for group in details:", group?.name, group?.contract_address);
     if (!account || !signer) {
       toast({
         title: "Wallet not connected",
@@ -86,23 +87,45 @@ export const GroupDetails = (): JSX.Element => {
 
     setIsJoining(true);
     try {
+      console.log("Instantiating contract at:", group.contract_address);
+      const groupContract = new ethers.Contract(group.contract_address, AjooGroupABI.abi, signer);
+      
+      console.log("Checking if user is already a member...");
+      const memberIndex = await groupContract.memberIndices(account);
+      console.log("Member index:", memberIndex);
+      
+      if (Number(memberIndex) === 0) {
+        console.log("User is not a member. Sending joinGroup transaction...");
+        toast({ title: "Joining Circle...", description: "Adding your wallet to the group members." });
+        const joinTx = await groupContract.joinGroup();
+        console.log("Join TX hash:", joinTx.hash);
+        await joinTx.wait();
+        toast({ title: "Joined!", description: "You are now a member. Proceeding to deposit..." });
+      }
+
+      console.log("Formatting contribution amount:", group.contribution_amount);
       const amountInWei = ethers.parseUnits(group.contribution_amount.toString(), 6);
       const usdcContract = new ethers.Contract(USDC_ADDRESS, ERC20_ABI, signer);
       
+      console.log("Checking USDC allowance...");
       const currentAllowance = await usdcContract.allowance(account, group.contract_address);
+      console.log("Current allowance:", currentAllowance.toString());
       
       if (currentAllowance < amountInWei) {
+        console.log("Insufficient allowance. Sending approve transaction...");
         toast({ title: "Approving USDC...", description: "Please confirm the approval transaction." });
         const approveTx = await usdcContract.approve(group.contract_address, amountInWei);
+        console.log("Approve TX hash:", approveTx.hash);
         await approveTx.wait();
       }
 
+      console.log("Sending deposit transaction...");
       toast({ title: "Depositing...", description: "Please confirm the deposit transaction." });
-      const groupContract = new ethers.Contract(group.contract_address, AjooGroupABI.abi, signer);
-      
       const depositTx = await groupContract.deposit();
+      console.log("Deposit TX hash:", depositTx.hash);
       await depositTx.wait();
 
+      console.log("Successfully joined and deposited!");
       toast({
         title: "Successfully Joined!",
         description: `You have joined ${group.name}.`,

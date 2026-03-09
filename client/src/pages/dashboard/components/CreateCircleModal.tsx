@@ -18,10 +18,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { PlusCircle, Loader2 } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const CreateCircleModal = () => {
   const { account, signer } = useWeb3();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -73,22 +75,27 @@ export const CreateCircleModal = () => {
       const receipt = await tx.wait();
       
       // Extract the new group address from the event
-      let newGroupAddress = `UNKNOWN_ADDRESS_${Date.now()}`;
+      let newGroupAddress = `PENDING_ADDRESS_${Date.now()}`;
       
-      for (const log of receipt.logs) {
-        try {
-          const parsedLog = factoryContract.interface.parseLog({
-            topics: [...log.topics],
-            data: log.data
-          });
-          
-          if (parsedLog && parsedLog.name === 'GroupCreated') {
-            newGroupAddress = parsedLog.args[0];
-            break;
+      try {
+        for (const log of receipt.logs) {
+          try {
+            const parsedLog = factoryContract.interface.parseLog({
+              topics: [...log.topics],
+              data: log.data
+            });
+            
+            if (parsedLog && parsedLog.name === 'GroupCreated') {
+              // In ethers v6, args is a Result object which can be accessed by name or index
+              newGroupAddress = parsedLog.args.groupAddress || parsedLog.args[0] || newGroupAddress;
+              break;
+            }
+          } catch (e) {
+            // Ignore logs that don't match the ABI (like standard ERC20 logs)
           }
-        } catch (e) {
-          // Ignore logs that don't match the ABI
         }
+      } catch (err) {
+        console.error("Failed to parse logs for contract address:", err);
       }
 
       // 2. Save metadata to Supabase
@@ -107,6 +114,9 @@ export const CreateCircleModal = () => {
         .single();
 
       if (error) throw error;
+
+      // Force dashboard to refresh data
+      queryClient.invalidateQueries({ queryKey: ["groups"] });
 
       toast({
         title: "Circle Created Successfully!",

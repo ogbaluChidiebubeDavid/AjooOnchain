@@ -38,7 +38,9 @@ export const RotationalSavingsCardsSection = (): JSX.Element => {
   });
 
   const handleJoin = async (group: any) => {
+    console.log("Initiating join for group:", group.name, group.contract_address);
     if (!account || !signer) {
+      console.warn("No account or signer found in Web3Context");
       toast({
         title: "Wallet not connected",
         description: "Please connect your wallet to join a circle.",
@@ -48,6 +50,7 @@ export const RotationalSavingsCardsSection = (): JSX.Element => {
     }
 
     if (!group.contract_address) {
+      console.warn("Group missing contract address", group);
       toast({
         title: "Invalid Contract",
         description: "This circle does not have a valid on-chain address yet.",
@@ -58,35 +61,50 @@ export const RotationalSavingsCardsSection = (): JSX.Element => {
 
     setJoiningGroupId(group.id);
     try {
+      console.log("Instantiating contract at:", group.contract_address);
       const groupContract = new ethers.Contract(group.contract_address, AjooGroupABI.abi, signer);
       
       // 1. Check if user needs to join the group first
+      console.log("Checking if user is already a member...");
       const memberIndex = await groupContract.memberIndices(account);
+      console.log("Member index:", memberIndex);
       
       if (Number(memberIndex) === 0) {
+        console.log("User is not a member. Sending joinGroup transaction...");
         toast({ title: "Joining Circle...", description: "Adding your wallet to the group members." });
         const joinTx = await groupContract.joinGroup();
+        console.log("Join TX hash:", joinTx.hash);
         await joinTx.wait();
         toast({ title: "Joined!", description: "You are now a member. Proceeding to deposit..." });
+      } else {
+        console.log("User is already a member. Proceeding to deposit...");
       }
 
       // 2. Approve USDC transfer
+      console.log("Formatting contribution amount:", group.contribution_amount);
       const amountInWei = ethers.parseUnits(group.contribution_amount.toString(), 6);
       const usdcContract = new ethers.Contract(USDC_ADDRESS, ERC20_ABI, signer);
       
+      console.log("Checking USDC allowance...");
       const currentAllowance = await usdcContract.allowance(account, group.contract_address);
+      console.log("Current allowance:", currentAllowance.toString());
       
       if (currentAllowance < amountInWei) {
+        console.log("Insufficient allowance. Sending approve transaction...");
         toast({ title: "Approving USDC...", description: "Please confirm the approval transaction." });
         const approveTx = await usdcContract.approve(group.contract_address, amountInWei);
+        console.log("Approve TX hash:", approveTx.hash);
         await approveTx.wait();
       }
 
       // 3. Call deposit on the AjooGroup contract
+      console.log("Sending deposit transaction...");
       toast({ title: "Depositing...", description: "Please confirm the deposit transaction." });
       const depositTx = await groupContract.deposit();
+      console.log("Deposit TX hash:", depositTx.hash);
       await depositTx.wait();
 
+      console.log("Successfully joined and deposited!");
       toast({
         title: "Successfully Joined & Contributed!",
         description: `You have joined and paid your contribution for ${group.name}.`,
