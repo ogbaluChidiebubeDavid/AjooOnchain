@@ -51,7 +51,7 @@ export const CreateCircleModal = () => {
       // Fuji Addresses for Aave & USDC
       const usdcAddress = "0x5425890298aed601595a70AB815c96711a31Bc65";
       const aavePoolAddress = "0x794a61358D6845594F94dc1DB02A252b5b4814aD";
-      const aUSDCAddress = "0x65A04eC763f72AD8C5F4170707328E07340e698E";
+      const aUSDCAddress = "0x1ee62269e297151f017546da309d6fbd26182001";
       
       const amountInWei = ethers.parseUnits(formData.amount, 6); // Assuming USDC (6 decimals)
       const durationInSeconds = parseInt(formData.duration) * 24 * 60 * 60;
