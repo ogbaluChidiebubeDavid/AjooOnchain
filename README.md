@@ -2,54 +2,61 @@
 
 **Multiply Your Wealth Together.**
 
-AJOO is a decentralized fintech protocol that digitizes traditional West African "Ajo/Esusu" rotational savings models on the Avalanche blockchain. By combining collective savings with DeFi yield generation, AJOO turns traditional savings circles into income-generating assets.
+AJOO is a decentralized fintech protocol that digitizes traditional West African "Ajo/Esusu" rotational savings models on the Avalanche blockchain. By combining the power of collective savings with decentralized finance (DeFi) yield generation, AJOO turns traditional, stagnant savings circles into dynamic, income-generating assets.
+
+---
+
+## 📖 What is AJOO?
+
+In many cultures around the world, friends, family, or colleagues form "savings circles." Every cycle (e.g., weekly or monthly), each member contributes a fixed amount of money to a central pool. At the end of the cycle, one member takes the entire pool. This rotates until everyone has received a payout. 
+
+While effective, traditional savings circles face several problems:
+- **Trust Issues:** Relying on a central person to hold the funds.
+- **Inflation/Stagnation:** The money sits idle in a bank or under a mattress, losing value over time.
+- **Geographic Limitations:** It is difficult to manage circles with people across different borders or currencies.
+
+**AJOO Onchain solves this.** It replaces the middleman with transparent smart contracts on the Avalanche blockchain and uses stablecoins (like USDC) to borderless, permissionless savings.
+
+---
+
+## ⚙️ How It Works
+
+1. **Create a Circle:** A user acts as the host and launches a new savings circle. They define the rules: the contribution amount (e.g., 10 USDC), the duration of each cycle (e.g., 7 days), and the maximum number of participants.
+2. **Join & Deposit:** Members connect their Web3 wallets and join the circle. When they deposit their required stablecoin contribution, the smart contract locks it securely.
+3. **Yield Generation (The Magic):** While the pool of funds is waiting to be paid out, AJOO doesn't just let it sit idle. The smart contract automatically supplies the pooled stablecoins to the **Aave V3 Protocol** on Avalanche. The funds earn interest continuously.
+4. **Automated Payouts:** Once the cycle duration is met and all members have contributed, **Chainlink Automation** (Keepers) automatically triggers the payout. The smart contract withdraws the funds from Aave (including the generated interest) and sends the entire pool to the current cycle's recipient.
+5. **Rotation:** The recipient index moves to the next person, and the next cycle begins.
 
 ---
 
 ## 🌟 Core Features
 
-- **Decentralized Rotational Savings:** Create or join automated "Ajo" circles where members contribute stablecoins at regular intervals.
-- **DeFi Yield Generation:** Pooled funds are automatically supplied to **Aave V3** on Avalanche, generating interest for all members while they wait for their payout.
-- **Automated Payouts:** Powered by **Chainlink Automation**, the protocol automatically triggers payouts to the next person in the rotation as soon as conditions are met.
-- **Web3 Native Identity:** Full integration with **Web3Modal (Reown AppKit)**, allowing users to connect via MetaMask, Trust Wallet, Coinbase Wallet, or by scanning a QR code from their mobile device.
-- **Off-Chain Metadata Sync:** Supabase integration ensures fast dashboard loading and secure storage of non-critical group details (names, descriptions).
-- **Graceful Liquidation:** Built-in safety mechanisms to protect honest contributors if a member fails to pay their share.
+- **Decentralized Rotational Savings:** Fully automated, trustless "Ajo" circles where smart contracts handle all custody and logic.
+- **DeFi Yield Generation:** Pooled funds automatically earn interest via **Aave V3**, meaning the payout is often larger than the sum of the contributions.
+- **Automated Payouts:** Powered by **Chainlink Automation**, the protocol guarantees timely distributions without human intervention.
+- **Web3 Native Identity:** Seamless onboarding with **Web3Modal (Reown AppKit)**, supporting major wallets like MetaMask, Trust Wallet, and Coinbase Wallet.
+- **Off-Chain Metadata Sync:** Supabase integration ensures a blazing-fast user interface by caching non-critical group details off-chain while maintaining on-chain absolute truth for funds.
+- **Graceful Liquidation:** Built-in safety mechanisms and grace periods. If a member fails to pay their share, the protocol allows the group to liquidate and recover their funds fairly.
 
 ---
 
-## 🏗️ Technical Architecture
+## 🏗️ Technical Architecture & Stack
 
-### 1. Smart Contracts (Foundry)
-- **`AjooFactory.sol`**: The entry point for users to deploy their own custom savings circles. It maintains a registry of all active groups.
-- **`AjooGroup.sol`**: The core logic handler for each circle. It manages contributions, Aave interactions, rotation indices, and payout distributions.
+### 1. Smart Contracts
+- **`AjooFactory.sol`**: The entry point for users to deploy their own custom savings circles. It maintains an on-chain registry of all active groups.
+- **`AjooGroup.sol`**: The core logic handler for each individual circle. It securely manages contributions, handles Aave yield interactions, tracks the rotation index, and interfaces with Chainlink Keepers for automated distributions.
+- **Built with:** Solidity, Foundry.
 
-### 2. Frontend (React + Vite)
-- A high-performance, responsive dashboard built with **TypeScript**, **Tailwind CSS**, and **shadcn/ui**.
-- **`Web3Context`**: Manages the global connection state, provider synchronization, and user identity across the application using Web3Modal.
-- **TanStack Query**: Handles efficient data fetching and caching from both the blockchain and Supabase.
+### 2. Frontend Application
+- A high-performance, responsive dashboard designed for an intuitive Web3 experience.
+- **Built with:** React, Vite, TypeScript, Tailwind CSS, and shadcn/ui.
+- **Web3 Integration:** Ethers.js (v6) and Web3Modal / Reown AppKit for wallet connection and transaction signing.
+- **State Management:** TanStack Query for efficient data fetching, caching, and background synchronization between the blockchain and the frontend.
 
----
-
-## 🔺 Avalanche Technical Stack
-
-AJOO leverages the high-performance Avalanche ecosystem to provide a seamless and scalable savings experience:
-
-- **Avalanche C-Chain:** Our smart contracts are deployed on the C-Chain for EVM compatibility and sub-second finality.
+### 3. Avalanche Ecosystem
+AJOO leverages the high-performance Avalanche network to provide a seamless, low-fee, and scalable savings experience:
+- **Avalanche C-Chain:** Smart contracts are deployed here for full EVM compatibility, sub-second finality, and ultra-low transaction costs.
 - **Avalanche Fuji Testnet:** The current environment for testing and public demonstration.
-- **Avalanche Warp Messaging (AWM):** (Architecture Plan) Utilizing AWM for trustless cross-chain savings communication.
-- **Avalanche Teleporter:** (Architecture Plan) Built on AWM to facilitate cross-subnet asset transfers and data sharing.
-- **Core Wallet Integration:** Optimized for the native Avalanche wallet experience.
-
----
-
-## 🛠️ General Tools Used
-
-- **Smart Contracts:** Solidity, Foundry (Forge, Cast, Anvil).
-- **Frontend:** React, Vite, TypeScript, Tailwind CSS, shadcn/ui, Framer Motion.
-- **Web3 Integration:** Ethers.js (v6), Web3Modal / Reown AppKit, WalletConnect.
-- **Database & Off-chain:** Supabase (PostgreSQL, Edge Functions, Realtime).
-- **DeFi Protocols:** Aave V3 (Avalanche Fuji).
-- **Infrastructure:** Chainlink Automation (Keepers), Vercel (Deployment).
 
 ---
 
@@ -61,60 +68,6 @@ The core Factory contract is deployed and verified on the **Avalanche Fuji Testn
 - **Transaction Hash:** `0xad8404bb9be392ce28d3483a6a4ba37badd63daf636f1c3e9f7037d66925663e`
 - **Snowtrace Explorer:** [https://testnet.snowtrace.io/address/0x940fCaE3bAaBC3782F3309211e357481cEe73C36](https://testnet.snowtrace.io/address/0x940fCaE3bAaBC3782F3309211e357481cEe73C36)
 - **Avalanche Explorer:** [https://subnets-test.avax.network/c-chain/address/0x940fCaE3bAaBC3782F3309211e357481cEe73C36](https://subnets-test.avax.network/c-chain/address/0x940fCaE3bAaBC3782F3309211e357481cEe73C36)
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-- **Node.js** (v18+)
-- **Foundry** (for smart contract development)
-- **Git**
-
-### Installation
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/dev-Basscee/AjooOnchain.git
-   cd AjooOnchain
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-3. **Set up environment variables:**
-   Create a `.env` file in the root directory:
-   ```env
-   VITE_SUPABASE_URL=your_supabase_url
-   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-   VITE_PROJECT_ID=your_walletconnect_project_id
-   ```
-
-4. **Start the development server:**
-   ```bash
-   npm run dev
-   ```
-
----
-
-## 💡 Troubleshooting
-
-### Blank Screen on Deployment
-If the application displays a blank screen in production, ensure that the browser polyfills for `global` and `process` are present in `index.html`. This is required for some Web3 libraries (like WalletConnect) to function correctly in a Vite environment.
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request for any improvements or new features.
 
 ---
 
