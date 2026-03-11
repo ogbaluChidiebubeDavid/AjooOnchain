@@ -1,4 +1,5 @@
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { Link } from "wouter";
 
 export const CallToActionSection = (): JSX.Element => {
   const content = useScrollReveal(0.1);
@@ -14,14 +15,16 @@ export const CallToActionSection = (): JSX.Element => {
               <span className="text-white"> Journey Started</span>
             </h2>
 
-            <button
-              className="inline-flex items-center justify-center px-5 py-2 bg-[#0f766e] rounded-3xl hover:bg-[#0f766e]/90 transition-colors w-fit mx-auto lg:mx-0"
-              data-testid="button-launch-app-cta"
-            >
-              <span className="font-['Inter',sans-serif] font-normal text-white text-[18px] leading-[28px]">
-                Launch App
-              </span>
-            </button>
+            <Link href="/dashboard">
+              <button
+                className="inline-flex items-center justify-center px-5 py-2 bg-[#0f766e] rounded-3xl hover:bg-[#0f766e]/90 transition-colors w-fit mx-auto lg:mx-0 cursor-pointer"
+                data-testid="button-launch-app-cta"
+              >
+                <span className="font-['Inter',sans-serif] font-normal text-white text-[18px] leading-[28px]">
+                  Launch App
+                </span>
+              </button>
+            </Link>
           </div>
 
           <div className="relative flex-shrink-0 w-[280px] h-[280px] sm:w-[350px] sm:h-[350px] md:w-[450px] md:h-[400px] lg:w-[500px] lg:h-[420px]">

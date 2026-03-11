@@ -3,6 +3,11 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Health check endpoint to verify backend connectivity
+  app.get("/api/health", (_req, res) => {
+    res.json({ status: "ok", message: "Backend is connected and running on the same port." });
+  });
+
   // put application routes here
   // prefix all routes with /api
 
